@@ -1,0 +1,31 @@
+version: "3"
+services:
+  flyway:
+    image: flyway/flyway
+    command: -url=jdbc:postgresql://postgresql:5432/jaglen -user=user -password=pass -connectRetries=60 migrate -X
+    volumes:
+      - ./flyway/sql:/flyway/sql
+      # Todo configファイル作って.envファイル作成（githubにあげるときでいいと思う）
+      # - ./flyway/config/flyway.config:/flyway/conf/flyway.config
+    depends_on:
+      - postgresql
+
+  postgresql:
+    image: postgres:12.2
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_DB=jaglen
+
+  go:
+    build:
+      context: .
+      dockerfile: ./docker/go/Dockerfile
+    ports:
+      - "3000:8080"
+    volumes:
+      - ./src/:/go/src
+    tty: true
