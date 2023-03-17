@@ -1,4 +1,4 @@
-module github.com/higayu624/jaglen
+module jaglen
 
 go 1.19
 

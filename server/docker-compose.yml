@@ -1,31 +1,39 @@
 version: "3"
 services:
-  flyway:
-    image: flyway/flyway
-    command: -url=jdbc:postgresql://postgresql:5432/jaglen -user=user -password=pass -connectRetries=60 migrate -X
-    volumes:
-      - ./flyway/sql:/flyway/sql
-      # Todo configファイル作って.envファイル作成（githubにあげるときでいいと思う）
-      # - ./flyway/config/flyway.config:/flyway/conf/flyway.config
-    depends_on:
-      - postgresql
-
   postgresql:
     image: postgres:12.2
     restart: always
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=user
+      - POSTGRES_USER=local_user
       - POSTGRES_PASSWORD=pass
       - POSTGRES_DB=jaglen
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - TZ="Asia/Tokyo"
+    user: root
+    volumes:
+      - ./docker/postgresql/:/docker-entrypoint-initdb.d
+
+  flyway:
+    image: flyway/flyway
+    # command: -url=jdbc:postgresql://postgresql:5432/jaglen -user=user -password=pass -connectRetries=60 migrate -X
+    volumes:
+      - ./flyway/sql:/flyway/sql # migrate用
+      - ./flyway/sql_local:/flyway/sql_local # seeder用
+      - ./flyway/config_local:/flyway/conf # flyway config
+      # Todo configファイル作って.envファイル作成（githubにあげるときでいいと思う）
+      # - ./flyway/config/flyway.config:/flyway/conf/flyway.config
+    depends_on:
+      - postgresql
 
   go:
     build:
       context: .
       dockerfile: ./docker/go/Dockerfile
     ports:
-      - "3000:8080"
+      - "3000:7000"
     volumes:
-      - ./src/:/go/src
+      - ./src/:/go/src/jaglen
     tty: true

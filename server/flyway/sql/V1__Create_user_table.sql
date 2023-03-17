@@ -6,8 +6,8 @@ CREATE TABLE users (
   mail_address varchar(100),
   user_role int,
   user_status int,
-  updated_at timestamptz ,
-  created_at timestamptz ,
+  updated_at timestamptz NOT NULL default CURRENT_TIMESTAMP,
+  created_at timestamptz NOT NULL default CURRENT_TIMESTAMP,
   deleted_at timestamptz
 );
 COMMENT ON TABLE users IS 'ユーザー';
