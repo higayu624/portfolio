@@ -29,6 +29,7 @@
 		},
 		"[go.mod]": {
 			"editor.defaultFormatter": "golang.go"
-		}
+		},
+		"audioCues.lineHasError": "off"
 	}
 }

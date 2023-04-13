@@ -18,13 +18,11 @@ services:
 
   flyway:
     image: flyway/flyway
-    # command: -url=jdbc:postgresql://postgresql:5432/jaglen -user=user -password=pass -connectRetries=60 migrate -X
     volumes:
       - ./flyway/sql:/flyway/sql # migrate用
       - ./flyway/sql_local:/flyway/sql_local # seeder用
       - ./flyway/config_local:/flyway/conf # flyway config
       # Todo configファイル作って.envファイル作成（githubにあげるときでいいと思う）
-      # - ./flyway/config/flyway.config:/flyway/conf/flyway.config
     depends_on:
       - postgresql
 

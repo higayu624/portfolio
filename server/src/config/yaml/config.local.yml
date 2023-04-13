@@ -1,0 +1,11 @@
+name: jaglen
+host: postgresql
+port: 5432
+password: pass
+user: local_user
+schema: jaglen
+sslmode: disable
+maxidleconns: 5
+maxopenconns: 5
+connmaxlifetime: 8h # string (use for time.ParseDuration())
+databasedriver: postgres

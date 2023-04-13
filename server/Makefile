@@ -31,3 +31,19 @@ run-on-local-docker-go:
 init-local-dev:
 	$(MAKE) build-local-db
 	$(MAKE) run-on-local-docker-go
+
+## fresh local db
+.PHONY: fresh-local-db
+fresh-local-db:
+	$(MAKE) clean-local-db
+	$(MAKE) migrate-local-db
+
+## display db info
+.PHONY: info-local-db
+info-local-db:
+	@docker-compose run --rm flyway info
+
+## if you have migrate error.
+.PHONY: repair-local-db
+repair-local-db:
+	@docker-compose run --rm flyway repair
