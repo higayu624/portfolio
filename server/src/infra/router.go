@@ -17,9 +17,6 @@ func InitRouter(dbHandler *sql.DB) *gin.Engine {
 	router := gin.Default()
 	router.ContextWithFallback = true
 
-	// keycloak
-	// keycloak := NewLocalKeyCloak()
-
 	userPresenter := presenter.NewUserPresenter(*router)
 	userRepository := appgateway.NewUserRepository(dbHandler)
 	UserInteractor := interactor.NewUserInteractor(userPresenter, userRepository)

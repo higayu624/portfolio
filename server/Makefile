@@ -47,3 +47,8 @@ info-local-db:
 .PHONY: repair-local-db
 repair-local-db:
 	@docker-compose run --rm flyway repair
+
+## generate model
+.PHONY: generate-model
+generate-model:
+	sqlboiler psql

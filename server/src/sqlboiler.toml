@@ -1,0 +1,12 @@
+# 再生成前に既存の生成物を削除
+wipe = true
+# 生成ディレクトリ
+output = "adapter/gateway/model"
+[psql]
+    dbname = "jaglen"
+    # ここはlocalhostじゃなくてコンテナ名！！！！！！
+    host = "postgresql"
+    port = 5432
+    user = "local_user"
+    pass = "pass"
+    sslmode = "disable"
