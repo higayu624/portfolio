@@ -3,7 +3,7 @@ package presenter
 import (
 	"context"
 
-	"jaglen/entity"
+	"portfolioGo/entity"
 
 	"github.com/gin-gonic/gin"
 )

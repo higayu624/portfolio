@@ -1,9 +1,9 @@
-name: jaglen
+name: portfolioGo
 host: postgresql
 port: 5432
 password: pass
 user: local_user
-schema: jaglen
+schema: portfolioGo
 sslmode: disable
 maxidleconns: 5
 maxopenconns: 5

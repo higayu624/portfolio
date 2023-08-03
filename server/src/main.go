@@ -3,23 +3,35 @@ package main
 import (
 	"log"
 
-	appconfig "jaglen/config"
-	"jaglen/infra"
-	appdb "jaglen/infra/database"
+	"portfolioGo/adapter/http"
+
+	appconfig "portfolioGo/config"
+	appdb "portfolioGo/infra/database"
+	"portfolioGo/infra/migration"
 )
 
 func main() {
 	dbConfig := appconfig.DatabaseInfo()
-	dbHandler, err := appdb.DatabaseConnector(dbConfig)
-	defer dbHandler.Close()
+	db, err := appdb.DatabaseConnector(dbConfig)
 	if err != nil {
 		log.Print(err)
 	}
+	defer func() {
+		if sqlDb, err := db.DB(); err == nil {
+			sqlDb.Close()
+		}
+	}()
 
 	log.Printf("db connect successed!")
 
-	router := infra.InitRouter(dbHandler)
+	// migrate db
+	db.AutoMigrate(&migration.User{})
+	log.Printf("migrate successed!")
+
+	// build router
+	router := http.InitRouter(db)
 	router.Run(":3001")
+	log.Printf("started router! waiting 3001")
 
 	// router := gin.Default()
 	// router.GET("/", func(c *gin.Context) {

@@ -8,23 +8,13 @@ services:
     environment:
       - POSTGRES_USER=local_user
       - POSTGRES_PASSWORD=pass
-      - POSTGRES_DB=jaglen
+      - POSTGRES_DB=portfolioGo
       - POSTGRES_INITDB_ARGS=--encoding=UTF-8
       - POSTGRES_HOST_AUTH_METHOD=trust
       - TZ="Asia/Tokyo"
     user: root
     volumes:
       - ./docker/postgresql/:/docker-entrypoint-initdb.d
-
-  flyway:
-    image: flyway/flyway
-    volumes:
-      - ./flyway/sql:/flyway/sql # migrate用
-      - ./flyway/sql_local:/flyway/sql_local # seeder用
-      - ./flyway/config_local:/flyway/conf # flyway config
-      # Todo configファイル作って.envファイル作成（githubにあげるときでいいと思う）
-    depends_on:
-      - postgresql
 
   go:
     build:
@@ -33,5 +23,5 @@ services:
     ports:
       - "3000:7000"
     volumes:
-      - ./src/:/go/src/jaglen
+      - ./src/:/go/src/portfolioGo
     tty: true

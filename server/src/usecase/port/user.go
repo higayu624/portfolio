@@ -3,7 +3,7 @@ package port
 import (
 	"context"
 
-	"jaglen/entity"
+	"portfolioGo/entity"
 )
 
 type UserInputPort interface {

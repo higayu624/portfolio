@@ -4,8 +4,8 @@ import (
 	"context"
 	"log"
 
-	"jaglen/entity"
-	"jaglen/usecase/port"
+	"portfolioGo/entity"
+	"portfolioGo/usecase/port"
 )
 
 type UserInteractor struct {

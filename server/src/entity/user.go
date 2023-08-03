@@ -10,7 +10,7 @@ type User struct {
 	MailAddress string    `json:"mail_address"`
 	UserRole    int       `json:"user_role"`
 	UserStatus  int       `json:"user_status"`
-	Products    *Products `json:"products"`
+	Posts       *Posts    `json:"posts"`
 	UpdatedAt   time.Time `json:"updated_at"`
 	CreatedAt   time.Time `json:"created_at"`
 }

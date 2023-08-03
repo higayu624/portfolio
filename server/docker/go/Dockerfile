@@ -5,18 +5,15 @@ ENV GO111MODULE on
 RUN GOOS=linux GOARCH=arm64
 ENV TZ Asia/Tokyo
 
-# WORKDIR /go/src
-# COPY ./src .
-
-WORKDIR /go/src/jaglen
+WORKDIR /go/src/portfolioGo
 COPY src/ .
 
 EXPOSE 3001
 
 RUN apk upgrade --update && apk --no-cache add git
 
+RUN go get -u gorm.io/gorm
+RUN go get -u gorm.io/driver/postgres
 RUN go get -u github.com/cosmtrek/air/ && go build -o /go/bin/air github.com/cosmtrek/air
-RUN go install github.com/volatiletech/sqlboiler/v4@latest
-RUN go install github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-psql@latest
 
 CMD ["air", "-c", ".air.toml"]
