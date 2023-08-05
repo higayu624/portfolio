@@ -2,7 +2,6 @@ package database
 
 import (
 	"fmt"
-	"strconv"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -14,8 +13,15 @@ import (
 
 // DatabseConnector connects database and return database handler of sql.DB
 func DatabaseConnector(dbConfig *appconfig.PostgresInfo) (*gorm.DB, error) {
-	dsn := dbConfig.User + ":" + dbConfig.Password + "@tcp(127.0.0.1:" + strconv.Itoa(dbConfig.Port) + ")/" + dbConfig.Name + "?charset=utf"
-	fmt.Printf(dsn)
+	dsn := fmt.Sprintf(
+		"host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=Asia/Tokyo",
+		dbConfig.Host,
+		dbConfig.User,
+		dbConfig.Password,
+		dbConfig.Name,
+		dbConfig.Port,
+		dbConfig.SslMode,
+	)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, err

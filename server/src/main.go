@@ -7,7 +7,7 @@ import (
 
 	appconfig "portfolioGo/config"
 	appdb "portfolioGo/infra/database"
-	"portfolioGo/infra/migration"
+	"portfolioGo/infra/migrate"
 )
 
 func main() {
@@ -25,19 +25,14 @@ func main() {
 	log.Printf("db connect successed!")
 
 	// migrate db
-	db.AutoMigrate(&migration.User{})
+	migrate.Migrate(db)
 	log.Printf("migrate successed!")
+
+	// migrate db
+	migrate.Seed(db)
+	log.Printf("migrate db successed!")
 
 	// build router
 	router := http.InitRouter(db)
-	router.Run(":3001")
-	log.Printf("started router! waiting 3001")
-
-	// router := gin.Default()
-	// router.GET("/", func(c *gin.Context) {
-	// 	c.JSON(200, gin.H{"rwDBconfig": dbConfig})
-	// })
-	// fmt.Print("rwDBconfig", dbConfig)
-	// fmt.Print("Welcome to Postgres", dbHandler)
-	// router.Run(":3004")
+	router.Run(":7001")
 }

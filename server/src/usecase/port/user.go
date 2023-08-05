@@ -7,13 +7,11 @@ import (
 )
 
 type UserInputPort interface {
-	GetUserById(c context.Context, userId int) (entity.User, error)
-}
-
-type UserOutputPort interface {
-	RenderUserById(c context.Context, res entity.User)
+	GetUserById(c context.Context, userId int) (user *entity.User, err error)
+	GetUserByEmail(email string) (user *entity.User, err error)
 }
 
 type UserRepository interface {
-	InsertUserById(userId int) (*entity.User, error)
+	InsertUserById(userId int) (user *entity.User, err error)
+	InsertUserByEmail(email string) (user *entity.User, err error)
 }

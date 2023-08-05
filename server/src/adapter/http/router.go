@@ -3,30 +3,37 @@ package http
 import (
 	"portfolioGo/adapter/controller"
 	appgateway "portfolioGo/adapter/gateway"
-	"portfolioGo/adapter/presenter"
 	"portfolioGo/usecase/interactor"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
-var userAPIRoot = "user"
+var (
+	userAPIRoot  = "user"
+	loginAPIRoot = "login"
+)
 
 func InitRouter(db *gorm.DB) *gin.Engine {
 	router := gin.Default()
 	router.ContextWithFallback = true
 
-	userPresenter := presenter.NewUserPresenter(*router)
+	// define interface
 	userRepository := appgateway.NewUserRepository(db)
-	UserInteractor := interactor.NewUserInteractor(userPresenter, userRepository)
+	UserInteractor := interactor.NewUserInteractor(userRepository)
 
+	// Login
+	LoginHandler := controller.NewLoginHandler(*UserInteractor)
+	router.POST(loginAPIRoot, LoginHandler.Login)
+
+	// User
 	userGroup := router.Group(userAPIRoot)
 	{
 		route := ""
 		UserHandler := controller.NewUserHandler(*UserInteractor)
-		userGroup.Use()
+		userGroup.Use(LoginCheckMiddleware())
 
-		userGroup.GET(route, UserHandler.GetUserById(0))
+		userGroup.GET(route, UserHandler.GetUserById(1))
 	}
 	return router
 }
