@@ -21,7 +21,7 @@ services:
       context: .
       dockerfile: ./docker/go/Dockerfile
     ports:
-      - "3000:7000"
+      - "7001:7001"
     volumes:
       - ./src/:/go/src/portfolioGo
     tty: true
