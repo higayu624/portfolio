@@ -1,6 +1,6 @@
 package entity
 
 type EmailLoginRequest struct {
-	Email string `json:"email"`
+	Email string `json:"mail_address"`
 	Pass  string `json:"pass"`
 }

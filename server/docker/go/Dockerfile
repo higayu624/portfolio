@@ -14,6 +14,7 @@ RUN apk upgrade --update && apk --no-cache add git
 
 RUN go get -u gorm.io/gorm
 RUN go get -u gorm.io/driver/postgres
+RUN go get -u github.com/gin-contrib/sessions
 RUN go get -u github.com/cosmtrek/air/ && go build -o /go/bin/air github.com/cosmtrek/air
 
 CMD ["air", "-c", ".air.toml"]

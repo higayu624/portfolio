@@ -31,7 +31,7 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 	{
 		route := ""
 		UserHandler := controller.NewUserHandler(*UserInteractor)
-		userGroup.Use(LoginCheckMiddleware())
+		// userGroup.Use(LoginCheckMiddleware())
 
 		userGroup.GET(route, UserHandler.GetUserById(1))
 	}

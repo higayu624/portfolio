@@ -9,6 +9,7 @@ import (
 	"portfolioGo/usecase/port"
 
 	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -38,12 +39,11 @@ func (lh LoginHandler) Login(c *gin.Context) {
 		if err != nil {
 			c.Status(http.StatusBadRequest)
 		} else {
-			session := sessions.Default(c)
 			// セッションに格納するためにユーザ情報をJSON化
 			authUser, err := json.Marshal(user)
 			if err == nil {
-				session.Set("AuthUser", string(authUser))
-				session.Save()
+				store := cookie.NewStore([]byte(authUser))
+				sessions.Sessions("AuthUser", store)
 				c.Status(http.StatusOK)
 			} else {
 				c.Status(http.StatusInternalServerError)
