@@ -18,6 +18,16 @@ func NewUserInteractor(userRepository port.UserRepository) *UserInteractor {
 	}
 }
 
+// GetUserPostByRecent get User and User's Post By Recent
+func (ui UserInteractor) GetUserPostByRecent(c context.Context) (users *entity.Users, err error) {
+	users, err = ui.UserRepository.InsertUserPostByRecent()
+	if err != nil {
+		log.Fatalf("InsertUserPostByRecent have error %s", err)
+	}
+
+	return
+}
+
 // GetUserById get User Informations By ID
 func (ui UserInteractor) GetUserById(c context.Context, userId int) (user *entity.User, err error) {
 	user, err = ui.UserRepository.InsertUserById(userId)

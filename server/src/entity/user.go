@@ -9,5 +9,8 @@ type User struct {
 	MailAddress string `json:"mail_address"`
 	UserRole    int    `json:"user_role"`
 	UserStatus  int    `json:"user_status"`
-	Post        *Post  `json:"post"`
+	PlaceID     int    `json:"place_id"`
+	Post        Post   `gorm:"foreignKey:UserId"`
 }
+
+type Users []User
