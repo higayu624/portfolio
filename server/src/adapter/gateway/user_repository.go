@@ -2,6 +2,7 @@ package gateway
 
 import (
 	"fmt"
+	"log"
 
 	"portfolioGo/entity"
 	"portfolioGo/usecase/port"
@@ -55,6 +56,21 @@ func (ur UserRepository) InsertUserByEmail(email string) (user *entity.User, err
 	if err != nil {
 		fmt.Printf("can not set User Object: %s", err)
 	}
+
+	return
+}
+
+func (ur UserRepository) CreateUser(request *entity.User) (response bool, err error) {
+	log.Print("request", request)
+	tx := ur.dbHandler.Begin()
+	result := tx.Create(&request)
+	err = result.Error
+	if err != nil {
+		response = false
+
+		return
+	}
+	response = true
 
 	return
 }

@@ -24,7 +24,8 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 
 	// Login
 	LoginHandler := controller.NewLoginHandler(*UserInteractor)
-	router.POST(loginAPIRoot, LoginHandler.Login)
+	router.POST(loginAPIRoot, LoginHandler.Login())
+	router.POST(userAPIRoot, LoginHandler.CreateUser())
 
 	// User
 	userGroup := router.Group(userAPIRoot)

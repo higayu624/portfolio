@@ -47,3 +47,13 @@ func (ui UserInteractor) GetUserByEmail(email string) (user *entity.User, err er
 
 	return
 }
+
+// CreateUser create User
+func (ui UserInteractor) CreateUser(request *entity.User) (response bool, err error) {
+	response, err = ui.UserRepository.CreateUser(request)
+	if err != nil {
+		log.Fatalf("CreateUser have error %s", err)
+	}
+
+	return
+}
