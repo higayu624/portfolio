@@ -2,7 +2,6 @@ package gateway
 
 import (
 	"fmt"
-	"log"
 
 	"portfolioGo/entity"
 	"portfolioGo/usecase/port"
@@ -20,6 +19,7 @@ func NewUserRepository(dbHandler *gorm.DB) port.UserRepository {
 	}
 }
 
+// InsertUserPostByRecent Insert User and Post Information from new Posts
 func (ur UserRepository) InsertUserPostByRecent() (users *entity.Users, err error) {
 	users = &entity.Users{}
 	// activate := true
@@ -60,7 +60,6 @@ func (ur UserRepository) InsertUserByEmail(email string) (user *entity.User, err
 }
 
 func (ur UserRepository) CreateUser(request *entity.User) (response bool, err error) {
-	log.Print("request", request)
 	tx := ur.dbHandler.Begin()
 	result := tx.Create(&request)
 	err = result.Error
@@ -69,6 +68,14 @@ func (ur UserRepository) CreateUser(request *entity.User) (response bool, err er
 
 		return
 	}
+	response = true
+
+	return
+}
+
+func (ur UserRepository) DeleteUser(request *entity.User) (response bool, err error) {
+	tx := ur.dbHandler.Begin()
+	tx.Select("Post").Delete(&request)
 	response = true
 
 	return

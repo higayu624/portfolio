@@ -3,6 +3,7 @@ package controller
 import (
 	"net/http"
 
+	"portfolioGo/entity"
 	"portfolioGo/usecase/port"
 
 	"github.com/gin-gonic/gin"
@@ -51,5 +52,21 @@ func (uh UserHandler) GetAUserPost() gin.HandlerFunc {
 			return
 		}
 		c.JSON(http.StatusOK, authUser)
+	}
+}
+
+func (uh UserHandler) Withdrawal() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		value, exist := c.Get("authUser")
+		if !exist {
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		authUser := value.(*entity.User)
+		response, err := uh.UserInteractor.Withdrawal(authUser)
+		if err != nil {
+			c.JSON(http.StatusConflict, err)
+		}
+		c.JSON(http.StatusOK, response)
 	}
 }

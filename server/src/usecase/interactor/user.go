@@ -57,3 +57,13 @@ func (ui UserInteractor) SignUp(request *entity.User) (response bool, err error)
 
 	return
 }
+
+// Withdrawal delete a User and Post
+func (ui UserInteractor) Withdrawal(request *entity.User) (response bool, err error) {
+	response, err = ui.UserRepository.DeleteUser(request)
+	if err != nil {
+		log.Fatalf("DeleteUser have error %s", err)
+	}
+
+	return
+}

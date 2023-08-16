@@ -11,6 +11,7 @@ type UserInputPort interface {
 	GetUserByEmail(email string) (user *entity.User, err error)
 	GetUserPostByRecent(c context.Context) (users *entity.Users, err error)
 	SignUp(request *entity.User) (response bool, err error)
+	Withdrawal(request *entity.User) (response bool, err error)
 }
 
 type UserRepository interface {
@@ -18,4 +19,5 @@ type UserRepository interface {
 	InsertUserByEmail(email string) (user *entity.User, err error)
 	InsertUserPostByRecent() (users *entity.Users, err error)
 	CreateUser(request *entity.User) (response bool, err error)
+	DeleteUser(request *entity.User) (response bool, err error)
 }
