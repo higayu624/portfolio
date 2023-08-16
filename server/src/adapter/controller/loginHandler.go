@@ -1,15 +1,12 @@
 package controller
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 
 	"portfolioGo/entity"
 	"portfolioGo/usecase/port"
 
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -30,44 +27,55 @@ func (lh LoginHandler) Login() gin.HandlerFunc {
 		err := c.BindJSON(&request)
 		if err != nil {
 			c.Status(http.StatusBadRequest)
-		} else {
-			user, err := lh.UserInteractor.GetUserByEmail(request.Email)
-			if err != nil {
-				log.Print(err)
-			}
-			// ハッシュ値でのパスワード比較
-			err = bcrypt.CompareHashAndPassword([]byte(user.Pass), []byte(request.Pass))
-			if err != nil {
-				c.Status(http.StatusBadRequest)
-			} else {
-				// セッションに格納するためにユーザ情報をJSON化
-				authUser, err := json.Marshal(user)
-				if err == nil {
-					store := cookie.NewStore([]byte(authUser))
-					sessions.Sessions("AuthUser", store)
-					c.Status(http.StatusOK)
-				} else {
-					c.Status(http.StatusInternalServerError)
-				}
-			}
+			return
 		}
+		// requestのメールからuser情報を取得
+		authUser, err := lh.UserInteractor.GetUserByEmail(request.Email)
+		if err != nil {
+			log.Print(err)
+		}
+		// ハッシュ値でのパスワード比較
+		err = bcrypt.CompareHashAndPassword([]byte(authUser.Pass), []byte(request.Pass))
+		if err != nil {
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		// token生成
+		token, err := GenerateToken(authUser.MailAddress)
+		if err != nil {
+			c.Error(err)
+			c.Abort()
+			return
+		}
+
+		// cookieセット TODO: *本番の時はlocalhostをそのサイトのドメインに変更する
+		c.SetCookie("token", token, 3600, "", "localhost", true, true)
+		c.JSON(http.StatusOK, authUser)
 	}
 }
 
-func (lh LoginHandler) CreateUser() gin.HandlerFunc {
+func (lh LoginHandler) SignUp() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var request *entity.User
 		err := c.BindJSON(&request)
 		if err != nil {
 			c.Status(http.StatusBadRequest)
-		} else {
-			res, err := lh.UserInteractor.CreateUser(request)
-			if err != nil {
-				c.Error(err)
-				c.Abort()
-				return
-			}
-			c.JSON(http.StatusOK, res)
+			return
 		}
+		res, err := lh.UserInteractor.SignUp(request)
+		if err != nil {
+			c.Error(err)
+			c.Abort()
+			return
+		}
+		token, err := GenerateToken(request.MailAddress)
+		if err != nil {
+			c.Error(err)
+			c.Abort()
+			return
+		}
+		// cookieセット TODO: *本番の時はlocalhostをそのサイトのドメインに変更する
+		c.SetCookie("token", token, 3600, "/", "localhost", false, true)
+		c.JSON(http.StatusOK, res)
 	}
 }
