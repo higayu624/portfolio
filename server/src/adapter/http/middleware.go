@@ -1,25 +1,33 @@
 package http
 
 import (
-	"fmt"
 	"log"
+	"net/http"
 
-	"github.com/gin-contrib/sessions"
+	"portfolioGo/adapter/controller"
+
 	"github.com/gin-gonic/gin"
 )
 
-func LoginCheckMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		log.Print("0")
-		session := sessions.Default(c)
-		log.Print("1")
-		// sessionからJsonを取得する
-		if session == nil {
-			fmt.Print("authUser is nothing")
-		} else {
-			authUser := session.Get("AuthUser")
-			c.Set("AuthUser", authUser)
-			c.Next()
-		}
+func AuthMiddleware(c *gin.Context) {
+	tokenString, err := c.Cookie("token")
+	log.Print(tokenString)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"message": "Unauthorized",
+		})
+		c.Abort()
+		return
 	}
+
+	token, err := controller.ParseToken(tokenString)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"message": "Invalid token",
+		})
+		c.Abort()
+		return
+	}
+	log.Print("token ", token)
+	c.Next()
 }

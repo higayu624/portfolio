@@ -10,8 +10,10 @@ import (
 )
 
 var (
-	userAPIRoot  = "user"
-	loginAPIRoot = "login"
+	userAPIRoot   = "user"
+	loginAPIRoot  = "login"
+	signUpAPIRoot = "signUp"
+	allAPIRoot    = "home"
 )
 
 func InitRouter(db *gorm.DB) *gin.Engine {
@@ -25,14 +27,18 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 	// Login
 	LoginHandler := controller.NewLoginHandler(*UserInteractor)
 	router.POST(loginAPIRoot, LoginHandler.Login())
-	router.POST(userAPIRoot, LoginHandler.CreateUser())
+	router.POST(signUpAPIRoot, LoginHandler.SignUp())
+
+	// init Page
+	allHandler := controller.NewUserHandler(*UserInteractor)
+	router.GET(allAPIRoot, allHandler.GetUserPostByRecent())
 
 	// User
 	userGroup := router.Group(userAPIRoot)
 	{
 		route := ""
 		UserHandler := controller.NewUserHandler(*UserInteractor)
-		// userGroup.Use(LoginCheckMiddleware())
+		userGroup.Use(AuthMiddleware)
 
 		userGroup.GET(route, UserHandler.GetUserPostByRecent())
 	}

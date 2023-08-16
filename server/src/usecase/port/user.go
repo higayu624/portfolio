@@ -10,7 +10,7 @@ type UserInputPort interface {
 	GetUserById(c context.Context, userId int) (user *entity.User, err error)
 	GetUserByEmail(email string) (user *entity.User, err error)
 	GetUserPostByRecent(c context.Context) (users *entity.Users, err error)
-	CreateUser(request *entity.User) (response bool, err error)
+	SignUp(request *entity.User) (response bool, err error)
 }
 
 type UserRepository interface {
