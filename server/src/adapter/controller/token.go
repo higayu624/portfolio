@@ -2,7 +2,6 @@ package controller
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"time"
 
@@ -23,7 +22,6 @@ func GenerateToken(mailAddress string) (tokenString string, err error) {
 	if err != nil {
 		return
 	}
-	log.Print("0")
 
 	return
 }

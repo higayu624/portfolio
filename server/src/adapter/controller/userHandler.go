@@ -41,3 +41,15 @@ func (uh UserHandler) GetUserById(userId int) gin.HandlerFunc {
 		c.JSON(http.StatusOK, res)
 	}
 }
+
+func (uh UserHandler) GetAUserPost() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// c.Getで認証済みのUser情報を取得
+		authUser, exist := c.Get("authUser")
+		if !exist {
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		c.JSON(http.StatusOK, authUser)
+	}
+}

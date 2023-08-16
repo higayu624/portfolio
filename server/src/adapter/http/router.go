@@ -38,9 +38,12 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 	{
 		route := ""
 		UserHandler := controller.NewUserHandler(*UserInteractor)
-		userGroup.Use(AuthMiddleware)
+		userGroup.Use(
+			AuthMiddleware,
+			SetToContext(db),
+		)
 
-		userGroup.GET(route, UserHandler.GetUserPostByRecent())
+		userGroup.GET(route, UserHandler.GetAUserPost())
 	}
 	return router
 }
