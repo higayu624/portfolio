@@ -70,3 +70,28 @@ func (uh UserHandler) Withdrawal() gin.HandlerFunc {
 		c.JSON(http.StatusOK, response)
 	}
 }
+
+// TODO: createで前のIDを引き継いだ形でcreateしなければいけない
+func (uh UserHandler) UpdateUser() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// request を受け取る
+		var request *entity.User
+		err := c.BindJSON(&request)
+		if err != nil {
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		// 認証済みのユーザ情報を受け取る
+		value, exist := c.Get("authUser")
+		if !exist {
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		authUser := value.(*entity.User)
+		response, err := uh.UserInteractor.UpdateUser(request, authUser)
+		if err != nil {
+			c.JSON(http.StatusConflict, err)
+		}
+		c.JSON(http.StatusOK, response)
+	}
+}

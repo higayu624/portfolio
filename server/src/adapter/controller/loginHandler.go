@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"log"
 	"net/http"
 
 	"portfolioGo/entity"
@@ -32,7 +31,8 @@ func (lh LoginHandler) Login() gin.HandlerFunc {
 		// requestのメールからuser情報を取得
 		authUser, err := lh.UserInteractor.GetUserByEmail(request.Email)
 		if err != nil {
-			log.Print(err)
+			c.JSON(http.StatusConflict, err)
+			return
 		}
 		// ハッシュ値でのパスワード比較
 		err = bcrypt.CompareHashAndPassword([]byte(authUser.Pass), []byte(request.Pass))

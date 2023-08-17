@@ -1,7 +1,6 @@
 package http
 
 import (
-	"log"
 	"net/http"
 
 	"portfolioGo/adapter/controller"
@@ -14,7 +13,6 @@ import (
 
 func AuthMiddleware(c *gin.Context) {
 	tokenString, err := c.Cookie("token")
-	log.Print(tokenString)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"message": "Unauthorized",
@@ -23,7 +21,7 @@ func AuthMiddleware(c *gin.Context) {
 		return
 	}
 
-	token, err := controller.ParseToken(tokenString)
+	_, err = controller.ParseToken(tokenString)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"message": "Invalid token",
@@ -31,7 +29,6 @@ func AuthMiddleware(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	log.Print("token ", token)
 	c.Next()
 }
 

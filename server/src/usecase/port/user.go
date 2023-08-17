@@ -12,6 +12,7 @@ type UserInputPort interface {
 	GetUserPostByRecent(c context.Context) (users *entity.Users, err error)
 	SignUp(request *entity.User) (response bool, err error)
 	Withdrawal(request *entity.User) (response bool, err error)
+	UpdateUser(request *entity.User, authUser *entity.User) (response bool, err error)
 }
 
 type UserRepository interface {
