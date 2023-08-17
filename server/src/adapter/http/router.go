@@ -45,6 +45,10 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 
 		userGroup.GET(route, UserHandler.GetAUserPost())
 		userGroup.DELETE(route, UserHandler.Withdrawal())
+		userGroup.PUT(route, UserHandler.UpdateUser())
+
+		route = "post"
+		userGroup.GET(route, UserHandler.GetPost())
 	}
 	return router
 }

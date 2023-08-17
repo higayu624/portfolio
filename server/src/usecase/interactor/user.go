@@ -71,14 +71,24 @@ func (ui UserInteractor) Withdrawal(request *entity.User) (response bool, err er
 // UpdateUser update User Informations by delete and create with equal ID
 func (ui UserInteractor) UpdateUser(request *entity.User, authUser *entity.User) (response bool, err error) {
 	userId := authUser.ID
+	request.ID = userId
+
 	response, err = ui.UserRepository.DeleteUser(authUser)
 	if err != nil {
 		log.Fatalf("DeleteUser have error %s", err)
 	}
-	request.ID = userId
 	response, err = ui.UserRepository.CreateUser(request)
 	if err != nil {
 		log.Fatalf("CreateUser have error %s", err)
+	}
+
+	return
+}
+
+func (ui UserInteractor) GetPost(authUser *entity.User) (post *entity.Post, err error) {
+	post, err = ui.UserRepository.InsertPost(authUser)
+	if err != nil {
+		log.Fatal("userRepository have error", err)
 	}
 
 	return

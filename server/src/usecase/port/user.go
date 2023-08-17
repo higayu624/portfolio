@@ -13,6 +13,7 @@ type UserInputPort interface {
 	SignUp(request *entity.User) (response bool, err error)
 	Withdrawal(request *entity.User) (response bool, err error)
 	UpdateUser(request *entity.User, authUser *entity.User) (response bool, err error)
+	GetPost(authUser *entity.User) (post *entity.Post, err error)
 }
 
 type UserRepository interface {
@@ -21,4 +22,5 @@ type UserRepository interface {
 	InsertUserPostByRecent() (users *entity.Users, err error)
 	CreateUser(request *entity.User) (response bool, err error)
 	DeleteUser(request *entity.User) (response bool, err error)
+	InsertPost(authUser *entity.User) (post *entity.Post, err error)
 }

@@ -95,3 +95,19 @@ func (uh UserHandler) UpdateUser() gin.HandlerFunc {
 		c.JSON(http.StatusOK, response)
 	}
 }
+
+func (uh UserHandler) GetPost() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		value, exist := c.Get("authUser")
+		if !exist {
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		authUser := value.(*entity.User)
+		post, err := uh.UserInteractor.GetPost(authUser)
+		if err != nil {
+			c.JSON(http.StatusConflict, err)
+		}
+		c.JSON(http.StatusOK, post)
+	}
+}

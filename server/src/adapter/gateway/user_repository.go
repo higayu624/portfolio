@@ -65,7 +65,6 @@ func (ur UserRepository) CreateUser(request *entity.User) (response bool, err er
 	err = result.Error
 	if err != nil {
 		response = false
-
 		return
 	}
 	response = true
@@ -75,8 +74,24 @@ func (ur UserRepository) CreateUser(request *entity.User) (response bool, err er
 
 func (ur UserRepository) DeleteUser(request *entity.User) (response bool, err error) {
 	tx := ur.dbHandler.Begin()
-	tx.Select("Post").Delete(&request)
+	result := tx.Select("Post").Delete(&request)
+	err = result.Error
+	if err != nil {
+		response = false
+		return
+	}
 	response = true
+
+	return
+}
+
+func (ur UserRepository) InsertPost(authUser *entity.User) (post *entity.Post, err error) {
+	post = &entity.Post{}
+	tx := ur.dbHandler.Begin()
+	err = tx.Model(&authUser).Association("Post").Find(&post)
+	if err != nil {
+		return
+	}
 
 	return
 }
