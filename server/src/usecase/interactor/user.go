@@ -101,3 +101,26 @@ func (ui UserInteractor) CreatePost(authUser *entity.User, post *entity.Post) (r
 	}
 	return
 }
+
+// DeletePost delete a User and Post
+func (ui UserInteractor) DeletePost(authUser *entity.User, post *entity.Post) (response bool, err error) {
+	response, err = ui.UserRepository.DeletePost(authUser, post)
+	if err != nil {
+		log.Fatalf("DeleteUser have error %s", err)
+	}
+
+	return
+}
+
+func (ui UserInteractor) UpdatePost(authUser *entity.User, post *entity.Post) (response bool, err error) {
+	response, err = ui.UserRepository.DeletePost(authUser, &authUser.Post)
+	if err != nil {
+		log.Fatalf("DeleteUser have error %s", err)
+	}
+	response, err = ui.UserRepository.CreatePost(authUser, post)
+	if err != nil {
+		log.Fatalf("CreateUser have error %s", err)
+	}
+
+	return
+}

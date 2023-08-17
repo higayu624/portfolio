@@ -106,3 +106,15 @@ func (ur UserRepository) CreatePost(authUser *entity.User, post *entity.Post) (r
 	response = true
 	return
 }
+
+func (ur UserRepository) DeletePost(authUser *entity.User, post *entity.Post) (response bool, err error) {
+	tx := ur.dbHandler.Begin()
+	err = tx.Model(&authUser).Association("Post").Delete(&post)
+	if err != nil {
+		response = false
+		return
+	}
+	response = true
+
+	return
+}
