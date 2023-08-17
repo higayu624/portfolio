@@ -95,3 +95,14 @@ func (ur UserRepository) InsertPost(authUser *entity.User) (post *entity.Post, e
 
 	return
 }
+
+func (ur UserRepository) CreatePost(authUser *entity.User, post *entity.Post) (response bool, err error) {
+	tx := ur.dbHandler.Begin()
+	err = tx.Model(&authUser).Association("Post").Append(&post)
+	if err != nil {
+		response = false
+		return
+	}
+	response = true
+	return
+}

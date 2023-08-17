@@ -93,3 +93,11 @@ func (ui UserInteractor) GetPost(authUser *entity.User) (post *entity.Post, err 
 
 	return
 }
+
+func (ui UserInteractor) CreatePost(authUser *entity.User, post *entity.Post) (response bool, err error) {
+	response, err = ui.UserRepository.CreatePost(authUser, post)
+	if err != nil {
+		log.Fatal("userRepository have error", err)
+	}
+	return
+}
