@@ -4,7 +4,9 @@ import (
 	"portfolioGo/adapter/controller"
 	appgateway "portfolioGo/adapter/gateway"
 	"portfolioGo/usecase/interactor"
+	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -19,6 +21,33 @@ var (
 func InitRouter(db *gorm.DB) *gin.Engine {
 	router := gin.Default()
 	router.ContextWithFallback = true
+
+	router.Use(cors.New(cors.Config{
+		// 許可したいHTTPメソッドの一覧
+		AllowMethods: []string{
+			"POST",
+			"GET",
+			"OPTIONS",
+			"PUT",
+			"DELETE",
+		},
+		// 許可したいHTTPリクエストヘッダの一覧
+		AllowHeaders: []string{
+			"Access-Control-Allow-Headers",
+			"Content-Type",
+			"Content-Length",
+			"Accept-Encoding",
+			"X-CSRF-Token",
+			"Authorization",
+			"Cookie",
+		},
+		// 許可したいアクセス元の一覧
+		AllowOrigins: []string{
+			"http://localhost:3000",
+		},
+		// 自分で許可するしないの処理を書きたい場合は、以下のように書くこともできる
+		MaxAge: 24 * time.Hour,
+	}))
 
 	// define interface
 	userRepository := appgateway.NewUserRepository(db)
