@@ -48,6 +48,7 @@ func (lh LoginHandler) Login() gin.HandlerFunc {
 			return
 		}
 
+		c.SetSameSite(http.SameSiteNoneMode)
 		// cookieセット TODO: *本番の時はlocalhostをそのサイトのドメインに変更する
 		c.SetCookie("mailAddress", authUser.MailAddress, 3600, "", "localhost", true, true)
 		c.SetCookie("token", token, 3600, "", "localhost", true, true)
@@ -75,6 +76,8 @@ func (lh LoginHandler) SignUp() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
+
+		c.SetSameSite(http.SameSiteNoneMode)
 		// cookieセット TODO: *本番の時はlocalhostをそのサイトのドメインに変更する
 		c.SetCookie("mailAddress", request.MailAddress, 3600, "", "localhost", true, true)
 		c.SetCookie("token", token, 3600, "/", "localhost", false, true)
