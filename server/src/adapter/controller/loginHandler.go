@@ -48,10 +48,14 @@ func (lh LoginHandler) Login() gin.HandlerFunc {
 			return
 		}
 
+		// TODO: values := [] string{token, authUser.MailAddress}
+		cookie := new(http.Cookie)
+		cookie.Value = authUser.MailAddress // Cookieに入れる値
 		c.SetSameSite(http.SameSiteNoneMode)
 		// cookieセット TODO: *本番の時はlocalhostをそのサイトのドメインに変更する
-		c.SetCookie("mailAddress", authUser.MailAddress, 3600, "", "localhost", true, false)
-		c.SetCookie("token", token, 3600, "", "localhost", true, false)
+		c.SetCookie("mailAddress", cookie.Value, 3600, "/", "localhost", true, true)
+		cookie.Value = token // Cookieに入れる値
+		c.SetCookie("token", cookie.Value, 3600, "/", "localhost", true, true)
 		c.JSON(http.StatusOK, authUser)
 	}
 }
@@ -77,10 +81,13 @@ func (lh LoginHandler) SignUp() gin.HandlerFunc {
 			return
 		}
 
+		cookie := new(http.Cookie)
+		cookie.Value = request.MailAddress
 		c.SetSameSite(http.SameSiteNoneMode)
 		// cookieセット TODO: *本番の時はlocalhostをそのサイトのドメインに変更する
-		c.SetCookie("mailAddress", request.MailAddress, 3600, "", "localhost", true, false)
-		c.SetCookie("token", token, 3600, "/", "localhost", false, false)
+		c.SetCookie("mailAddress", cookie.Value, 3600, "/", "localhost", true, true)
+		cookie.Value = token // Cookieに入れる値
+		c.SetCookie("token", cookie.Value, 3600, "/", "localhost", true, true)
 		c.JSON(http.StatusOK, res)
 	}
 }

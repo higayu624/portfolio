@@ -1,10 +1,11 @@
 package http
 
 import (
+	"time"
+
 	"portfolioGo/adapter/controller"
 	appgateway "portfolioGo/adapter/gateway"
 	"portfolioGo/usecase/interactor"
-	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -39,7 +40,7 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 			"Accept-Encoding",
 			"X-CSRF-Token",
 			"Authorization",
-			"Cookie",
+			"Set-Cookie",
 		},
 		// 許可したいアクセス元の一覧
 		AllowOrigins: []string{

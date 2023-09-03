@@ -8,11 +8,14 @@ import (
 	appconfig "portfolioGo/config"
 	appdb "portfolioGo/infra/database"
 	"portfolioGo/infra/migrate"
+
+	"gorm.io/gorm/logger"
 )
 
 func main() {
 	dbConfig := appconfig.DatabaseInfo()
 	db, err := appdb.DatabaseConnector(dbConfig)
+	db.Logger = db.Logger.LogMode(logger.Info)
 	if err != nil {
 		log.Print(err)
 	}
