@@ -49,13 +49,13 @@ func (ui UserInteractor) GetUserByEmail(email string) (user *entity.User, err er
 }
 
 // CreateUser create User
-func (ui UserInteractor) SignUp(request *entity.User) (response bool, err error) {
-	response, err = ui.UserRepository.CreateUser(request)
+func (ui UserInteractor) SignUp(request *entity.User) error {
+	err := ui.UserRepository.CreateUser(request)
 	if err != nil {
 		log.Fatalf("CreateUser have error %s", err)
 	}
 
-	return
+	return err
 }
 
 // Withdrawal delete a User and Post
@@ -77,7 +77,7 @@ func (ui UserInteractor) UpdateUser(request *entity.User, authUser *entity.User)
 	if err != nil {
 		log.Fatalf("DeleteUser have error %s", err)
 	}
-	response, err = ui.UserRepository.CreateUser(request)
+	err = ui.UserRepository.CreateUser(request)
 	if err != nil {
 		log.Fatalf("CreateUser have error %s", err)
 	}

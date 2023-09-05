@@ -10,7 +10,7 @@ build-local-db: up-local-postgres-docker
 ## run on local docker (darwin/arm64)
 .PHONY: run-on-local-docker-go
 run-on-local-docker-go:
-	@docker-compose up -d --no-deps --build go
+	@docker-compose up --no-deps --build go
 
 ## initialize local development environment---------------------------
 .PHONY: init-local-dev

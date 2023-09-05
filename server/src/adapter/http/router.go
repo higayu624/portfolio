@@ -41,6 +41,7 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 			"X-CSRF-Token",
 			"Authorization",
 			"Set-Cookie",
+			"Cookies",
 		},
 		// 許可したいアクセス元の一覧
 		AllowOrigins: []string{
@@ -66,14 +67,13 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 	// User
 	userGroup := router.Group(userAPIRoot)
 	{
-		route := ""
 		UserHandler := controller.NewUserHandler(*UserInteractor)
 		userGroup.Use(
 			AuthMiddleware,
 			SetToContext(db),
 		)
 
-		route = ""
+		route := ""
 		userGroup.GET(route, UserHandler.GetAUserPost())
 		userGroup.DELETE(route, UserHandler.Withdrawal())
 		userGroup.PUT(route, UserHandler.UpdateUser())

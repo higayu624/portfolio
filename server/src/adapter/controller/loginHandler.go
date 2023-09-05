@@ -20,6 +20,11 @@ func NewLoginHandler(UserInteractor port.UserInputPort) *LoginHandler {
 	}
 }
 
+type SignUpResponse struct {
+	MailAddress string `json:"mail_address"`
+	JWT         string `json:"jwt"`
+}
+
 func (lh LoginHandler) Login() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var request entity.EmailLoginRequest
@@ -47,6 +52,7 @@ func (lh LoginHandler) Login() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
+		authUser.JWT = token
 
 		// TODO: values := [] string{token, authUser.MailAddress}
 		cookie := new(http.Cookie)
@@ -68,7 +74,7 @@ func (lh LoginHandler) SignUp() gin.HandlerFunc {
 			c.Status(http.StatusBadRequest)
 			return
 		}
-		res, err := lh.UserInteractor.SignUp(request)
+		err = lh.UserInteractor.SignUp(request)
 		if err != nil {
 			c.Error(err)
 			c.Abort()
@@ -80,6 +86,9 @@ func (lh LoginHandler) SignUp() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
+		var Response *SignUpResponse
+		Response.MailAddress = request.MailAddress
+		Response.JWT = token
 
 		cookie := new(http.Cookie)
 		cookie.Value = request.MailAddress
@@ -88,6 +97,6 @@ func (lh LoginHandler) SignUp() gin.HandlerFunc {
 		c.SetCookie("mailAddress", cookie.Value, 3600, "/", "localhost", true, true)
 		cookie.Value = token // Cookieに入れる値
 		c.SetCookie("token", cookie.Value, 3600, "/", "localhost", true, true)
-		c.JSON(http.StatusOK, res)
+		c.JSON(http.StatusOK, Response)
 	}
 }

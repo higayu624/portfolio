@@ -10,6 +10,7 @@ type User struct {
 	UserRole    int    `json:"user_role"`
 	UserStatus  int    `json:"user_status"`
 	PlaceID     int    `json:"place_id"`
+	JWT         string `json:"jwt"`
 	Post        Post   `gorm:"foreignKey:UserId"`
 }
 

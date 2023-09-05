@@ -55,21 +55,20 @@ func (ur UserRepository) InsertUserByEmail(email string) (user *entity.User, err
 	return
 }
 
-func (ur UserRepository) CreateUser(request *entity.User) (response bool, err error) {
+func (ur UserRepository) CreateUser(request *entity.User) error {
 	tx := ur.dbHandler.Begin()
 	// create
 	if err := tx.Create(&request).Error; err != nil {
 		tx.Rollback()
-		return false, err
+		return err
 	}
 	// commit
-	err = tx.Commit().Error
+	err := tx.Commit().Error
 	if err != nil {
-		return false, err
+		return err
 	}
-	response = true
 
-	return
+	return err
 }
 
 func (ur UserRepository) DeleteUser(request *entity.User) (response bool, err error) {
