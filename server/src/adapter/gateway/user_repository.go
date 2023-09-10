@@ -47,7 +47,7 @@ func (ur UserRepository) InsertUserById(userId int) (user *entity.User, err erro
 func (ur UserRepository) InsertUserByEmail(email string) (user *entity.User, err error) {
 	user = &entity.User{}
 
-	err = ur.dbHandler.Preload("Post", "status = ?", true).Find(&user).Error
+	err = ur.dbHandler.Preload("Post", "status = ?", true).Find(&user, "mail_address = ?", email).Error
 	if err != nil {
 		fmt.Printf("can not set User Object: %s", err)
 	}
