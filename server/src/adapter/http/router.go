@@ -34,6 +34,7 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 		},
 		// 許可したいHTTPリクエストヘッダの一覧
 		AllowHeaders: []string{
+			"Access-Control-Allow-Credentials",
 			"Access-Control-Allow-Headers",
 			"Content-Type",
 			"Content-Length",
@@ -48,7 +49,9 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 			"http://localhost:3000",
 		},
 		// 自分で許可するしないの処理を書きたい場合は、以下のように書くこともできる
-		MaxAge: 24 * time.Hour,
+		// cookieなどの情報を必要とするかどうか
+		AllowCredentials: true,
+		MaxAge:           24 * time.Hour,
 	}))
 
 	// define interface

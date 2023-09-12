@@ -1,11 +1,72 @@
+import axios, { all } from "axios";
 import type { NextPage } from "next";
+import { useEffect, useState } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import hiroshimaJson from "../../HiroshimaJson/Hiroshima.json";
+import MyModal from "../components/modal";
+
+type Post = {
+  id: number;
+  user_id: number;
+  title: string;
+  description: string;
+  create_time: string;
+  status: string;
+};
+
+type Response = {
+  post: Post;
+  display_name: string;
+  family_name: string;
+  given_name: string;
+  id: number;
+  mail_address: string;
+  pass: string;
+  place_id: number;
+  user_role: number;
+  user_status: number;
+};
 
 const Home: NextPage = () => {
-  const onClick = (id: string) => {
-    window.alert(id);
+  const [showMyModal, setshowMyModal] = useState(false);
+
+  const handleOnClose = () => setshowMyModal(false);
+
+  const [allPost, setAllPost] = useState<Response[]>([]);
+  const [viewPost, setviewPost] = useState<Response[]>([]);
+
+  useEffect(() => {
+    const getInfo = async () => {
+      await axios.get(`${process.env.REACT_APP_API_URL}/home`).then((res) => {
+        setAllPost(res.data);
+      });
+    };
+    getInfo();
+  }, []);
+
+  const numToColor = (num: number): string => {
+    let color = "white";
+    if (num >= 1) {
+      color = "#ADD8E6";
+    } else if (num >= 10) {
+      color = "blue";
+    } else if (num >= 30) {
+      color = "red";
+    }
+    return color;
+  }; //未使用の関数
+
+  console.log("In home:", allPost);
+
+  const onClick = (clickedId: number) => {
+    console.log(
+      "id=",
+      clickedId,
+      allPost.filter(({ id }) => id === clickedId)
+    );
+    console.log("length", allPost.filter(({ id }) => id === clickedId).length);
   };
+
   return (
     <>
       <div className="flex items-center justify-center border">
@@ -24,12 +85,18 @@ const Home: NextPage = () => {
                       <path
                         key={`path-${feature.id}`}
                         d={feature.d}
-                        className="prefecture origin-center hover:fill-gray-100 hover:stroke-slate-700 hover:stroke-2 cursor-pointer duration-100 "
+                        className="prefecture origin-center hover:stroke-slate-700 hover:stroke-2 hover:shadow-inner cursor-pointer duration-100 "
                         stroke="black"
                         strokeWidth={0.5}
-                        fill="white"
+                        fill={numToColor(
+                          allPost.filter(({ id }) => id === feature.id).length
+                        )}
                         onClick={() => {
                           onClick(feature.id);
+                          setshowMyModal(true);
+                          setviewPost(
+                            allPost.filter(({ id }) => id === feature.id)
+                          );
                         }}
                       />
                     );
@@ -40,6 +107,11 @@ const Home: NextPage = () => {
           </TransformWrapper>
         </div>
       </div>
+      <MyModal
+        onClose={handleOnClose}
+        visible={showMyModal}
+        coupon={viewPost}
+      />
     </>
   );
 };
