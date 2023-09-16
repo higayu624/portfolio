@@ -16,5 +16,6 @@ RUN go get -u gorm.io/gorm
 RUN go get -u gorm.io/driver/postgres
 RUN go get -u github.com/gin-contrib/sessions
 RUN go get -u github.com/cosmtrek/air/ && go build -o /go/bin/air github.com/cosmtrek/air
+RUN go get -u github.com/jinzhu/copier
 
 CMD ["air", "-c", ".air.toml"]

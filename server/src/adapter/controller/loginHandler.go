@@ -2,11 +2,13 @@ package controller
 
 import (
 	"net/http"
+	"unsafe"
 
 	"portfolioGo/entity"
 	"portfolioGo/usecase/port"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/copier"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -18,6 +20,20 @@ func NewLoginHandler(UserInteractor port.UserInputPort) *LoginHandler {
 	return &LoginHandler{
 		UserInteractor: UserInteractor,
 	}
+}
+
+type authResponse struct {
+	ID          int         `json:"id"`
+	Pass        string      `json:"pass"`
+	GivenName   string      `json:"given_name"`
+	FamilyName  string      `json:"family_name"`
+	DisplayName string      `json:"display_name"`
+	MailAddress string      `json:"mail_address"`
+	UserRole    int         `json:"user_role"`
+	UserStatus  int         `json:"user_status"`
+	PlaceID     int         `json:"place_id"`
+	JWT         string      `json:"jwt"`
+	Post        entity.Post `gorm:"foreignKey:UserId"`
 }
 
 type SignUpResponse struct {
@@ -52,7 +68,10 @@ func (lh LoginHandler) Login() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		authUser.JWT = token
+
+		// 構造体の詰め替え
+		response := refillToAuthResponse(authUser)
+		response.JWT = token
 
 		// TODO: values := [] string{token, authUser.MailAddress}
 		cookie := new(http.Cookie)
@@ -62,7 +81,7 @@ func (lh LoginHandler) Login() gin.HandlerFunc {
 		c.SetCookie("mailAddress", cookie.Value, 3600, "/", "localhost", true, true)
 		cookie.Value = token // Cookieに入れる値
 		c.SetCookie("token", cookie.Value, 3600, "/", "localhost", true, true)
-		c.JSON(http.StatusOK, authUser)
+		c.JSON(http.StatusOK, response)
 	}
 }
 
@@ -74,6 +93,10 @@ func (lh LoginHandler) SignUp() gin.HandlerFunc {
 			c.Status(http.StatusBadRequest)
 			return
 		}
+
+		// passwordのhash化
+		request.Pass = makePassHash(request.Pass)
+
 		err = lh.UserInteractor.SignUp(request)
 		if err != nil {
 			c.Error(err)
@@ -86,7 +109,7 @@ func (lh LoginHandler) SignUp() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		var Response *SignUpResponse
+		var Response SignUpResponse
 		Response.MailAddress = request.MailAddress
 		Response.JWT = token
 
@@ -99,4 +122,21 @@ func (lh LoginHandler) SignUp() gin.HandlerFunc {
 		c.SetCookie("token", cookie.Value, 3600, "/", "localhost", true, true)
 		c.JSON(http.StatusOK, Response)
 	}
+}
+
+func refillToAuthResponse(user *entity.User) *authResponse {
+	var authResponse authResponse
+	if err := copier.Copy(&authResponse, &user); err != nil {
+		panic(err)
+	}
+	return &authResponse
+}
+
+func makePassHash(pass string) string {
+	passRow := []byte(pass)
+	password, err := bcrypt.GenerateFromPassword(passRow, bcrypt.DefaultCost)
+	if err != nil {
+		panic(err)
+	}
+	return *(*string)(unsafe.Pointer(&password))
 }

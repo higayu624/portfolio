@@ -1,7 +1,7 @@
 package entity
 
 type User struct {
-	ID          int    `json:"id"`
+	ID          int    `json:"id,omitempty"`
 	Pass        string `json:"pass"`
 	GivenName   string `json:"given_name"`
 	FamilyName  string `json:"family_name"`
@@ -10,7 +10,6 @@ type User struct {
 	UserRole    int    `json:"user_role"`
 	UserStatus  int    `json:"user_status"`
 	PlaceID     int    `json:"place_id"`
-	JWT         string `json:"jwt"`
 	Post        Post   `gorm:"foreignKey:UserId"`
 }
 
