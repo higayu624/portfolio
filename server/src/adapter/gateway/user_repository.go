@@ -98,9 +98,9 @@ func (ur UserRepository) InsertPost(authUser *entity.User) (post *entity.Post, e
 	return
 }
 
-func (ur UserRepository) CreatePost(authUser *entity.User, post *entity.Post) (response bool, err error) {
+func (ur UserRepository) CreatePost(post *entity.Post) (response bool, err error) {
 	tx := ur.dbHandler.Begin()
-	if err = tx.Model(&authUser).Association("Post").Append(&post); err != nil {
+	if err = tx.Create(&post).Error; err != nil {
 		tx.Rollback()
 		return false, err
 	}

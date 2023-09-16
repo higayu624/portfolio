@@ -125,7 +125,8 @@ func (uh UserHandler) CreatePost() gin.HandlerFunc {
 			return
 		}
 		authUser := value.(*entity.User)
-		post, err := uh.UserInteractor.CreatePost(authUser, request)
+		request.UserId = uint(authUser.ID)
+		post, err := uh.UserInteractor.CreatePost(request)
 		if err != nil {
 			c.JSON(http.StatusConflict, err)
 		}

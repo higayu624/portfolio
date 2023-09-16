@@ -94,8 +94,8 @@ func (ui UserInteractor) GetPost(authUser *entity.User) (post *entity.Post, err 
 	return
 }
 
-func (ui UserInteractor) CreatePost(authUser *entity.User, post *entity.Post) (response bool, err error) {
-	response, err = ui.UserRepository.CreatePost(authUser, post)
+func (ui UserInteractor) CreatePost(post *entity.Post) (response bool, err error) {
+	response, err = ui.UserRepository.CreatePost(post)
 	if err != nil {
 		log.Fatal("userRepository have error", err)
 	}
@@ -117,7 +117,7 @@ func (ui UserInteractor) UpdatePost(authUser *entity.User, post *entity.Post) (r
 	if err != nil {
 		log.Fatalf("DeleteUser have error %s", err)
 	}
-	response, err = ui.UserRepository.CreatePost(authUser, post)
+	response, err = ui.UserRepository.CreatePost(post)
 	if err != nil {
 		log.Fatalf("CreateUser have error %s", err)
 	}
