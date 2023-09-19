@@ -9,7 +9,6 @@ import (
 type Post struct {
 	gorm.Model
 
-	ID          int       `json:"id"`
 	UserId      uint      `json:"user_id"`
 	Title       string    `json:"title"`
 	Description string    `json:"description"` // 説明

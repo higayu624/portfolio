@@ -27,7 +27,6 @@ func getDatas() (users Users) {
 	pass, _ := bcrypt.GenerateFromPassword(passRow, bcrypt.DefaultCost)
 	users = Users{
 		{
-			ID:          1,
 			Pass:        pass,
 			GivenName:   "Yuma",
 			FamilyName:  "Higashitani",
@@ -37,7 +36,6 @@ func getDatas() (users Users) {
 			UserStatus:  0,
 			PlaceID:     1,
 			Post: Post{
-				ID:          1,
 				UserId:      1,
 				Title:       "今暇じゃけえ来てくれたらサービスしちゃる",
 				Description: "これ見たっていってくれれば10%OFFにするけえ、来ておくれ！",
@@ -47,7 +45,6 @@ func getDatas() (users Users) {
 		},
 
 		{
-			ID:          2,
 			Pass:        pass,
 			GivenName:   "Shota",
 			FamilyName:  "Abiru",
@@ -57,7 +54,6 @@ func getDatas() (users Users) {
 			UserStatus:  0,
 			PlaceID:     1,
 			Post: Post{
-				ID:          2,
 				UserId:      2,
 				Title:       "あびるの店",
 				Description: "お店に来て〜",
@@ -67,17 +63,15 @@ func getDatas() (users Users) {
 		},
 
 		{
-			ID:          3,
 			Pass:        pass,
 			GivenName:   "ゆうま",
 			FamilyName:  "ひがしたに",
 			DisplayName: "HIGASHI",
-			MailAddress: "higayu624@gmail.com",
+			MailAddress: "higayu6242@gmail.com",
 			UserRole:    1,
 			UserStatus:  0,
 			PlaceID:     1,
 			Post: Post{
-				ID:          3,
 				UserId:      3,
 				Title:       "ゆうまの店",
 				Description: "いい感じ",

@@ -103,23 +103,8 @@ func (lh LoginHandler) SignUp() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		token, err := GenerateToken(request.MailAddress)
-		if err != nil {
-			c.Error(err)
-			c.Abort()
-			return
-		}
-		var Response SignUpResponse
-		Response.MailAddress = request.MailAddress
-		Response.JWT = token
 
-		cookie := new(http.Cookie)
-		cookie.Value = request.MailAddress
-		c.SetSameSite(http.SameSiteNoneMode)
-		// cookieセット TODO: *本番の時はlocalhostをそのサイトのドメインに変更する
-		c.SetCookie("mailAddress", cookie.Value, 3600, "/", "localhost", true, true)
-		cookie.Value = token // Cookieに入れる値
-		c.SetCookie("token", cookie.Value, 3600, "/", "localhost", true, true)
+		Response := true
 		c.JSON(http.StatusOK, Response)
 	}
 }
