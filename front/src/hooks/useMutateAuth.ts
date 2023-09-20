@@ -8,7 +8,7 @@ import { useUserContext } from "../context/AppContext";
 
 export const useMutateAuth = () => {
   const router = useRouter();
-  const { setLogin } = useLoginContext();
+  const { setLogin, setJwt } = useLoginContext();
   const { switchErrorHandling } = useError();
   const { setUserInfo } = useUserContext();
 
@@ -19,7 +19,7 @@ export const useMutateAuth = () => {
       }),
     {
       onSuccess: (res) => {
-        console.log("cookie", res.headers["set-cookie"]);
+        setJwt(res.data.jwt);
         setLogin(true);
         router.push("/master");
         setUserInfo({
@@ -42,6 +42,19 @@ export const useMutateAuth = () => {
 
   const signUpMutation = useMutation(
     async (user: RequiredInformation) =>
+      await axios.post(`${process.env.REACT_APP_API_URL}/signUp`, user, {
+        withCredentials: true,
+      }),
+    {
+      onError: (err: any) => {
+        switchErrorHandling(err.message);
+      },
+    }
+  );
+
+  //未設定
+  const logOutMutation = useMutation(
+    async (user: RequiredInformation) =>
       await axios.post(`${process.env.REACT_APP_API_URL}/signup`, user, {
         withCredentials: true,
       }),
@@ -57,5 +70,5 @@ export const useMutateAuth = () => {
     }
   );
 
-  return { loginMutation };
+  return { loginMutation, signUpMutation };
 };

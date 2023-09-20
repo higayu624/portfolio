@@ -9,5 +9,13 @@ export type RequiredInformation = {
   given_name: string;
   family_name: string;
   display_name: string;
+  user_role: number;
+  user_status: number;
   place_id: number;
+};
+
+export type NewPost = {
+  title: string;
+  description: string;
+  status: boolean;
 };

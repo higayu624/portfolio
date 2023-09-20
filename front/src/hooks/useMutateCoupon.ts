@@ -3,41 +3,39 @@ import { useLoginContext } from "../context/AppContext";
 import { useMutation } from "react-query";
 import { useError } from "./useError";
 import axios from "axios";
-import { Credential, RequiredInformation } from "../types";
+import { NewPost } from "../types";
 import { useUserContext } from "../context/AppContext";
 
-export const useMutateAuth = () => {
+export const useMutateCoupon = () => {
   const router = useRouter();
-  const { setLogin } = useLoginContext();
+  const { jwt } = useLoginContext();
   const { switchErrorHandling } = useError();
-  const { setUserInfo } = useUserContext();
+  const { userInfo, setUserInfo } = useUserContext();
 
-  const loginMutation = useMutation(
-    async (user: Credential) =>
-      await axios.post(`${process.env.REACT_APP_API_URL}/login`, user, {
+  const postMutation = useMutation(
+    async (post: NewPost) =>
+      await axios.post(`${process.env.REACT_APP_API_URL}/user/post`, post, {
         withCredentials: true,
       }),
     {
       onSuccess: (res) => {
-        console.log("cookie", res.headers["set-cookie"]);
-        setLogin(true);
-        router.push("/master");
-        setUserInfo({
-          given_name: res.data.given_name,
-          family_name: res.data.family_name,
-          display_name: res.data.display_name,
-          mail_address: res.data.mail_address,
-          place_id: res.data.place_id,
+        const newUserInfo = {
+          given_name: userInfo.given_name,
+          family_name: userInfo.family_name,
+          display_name: userInfo.display_name,
+          mail_address: userInfo.mail_address,
+          place_id: userInfo.place_id,
           post: {
-            title: res.data.Post.title,
-            desctiption: res.data.Post.desctiption,
+            title: userInfo.post.title,
+            desctiption: userInfo.post.desctiption,
           },
-        }); //resに含まれる情報をユーザ情報としてcontextに保存する
+        };
+        setUserInfo(newUserInfo);
       },
       onError: (err: any) => {
         switchErrorHandling(err.message);
       },
     }
   );
-  return { loginMutation };
+  return { postMutation };
 };
