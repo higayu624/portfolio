@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"time"
 
 	"portfolioGo/entity"
 	"portfolioGo/usecase/port"
@@ -119,6 +120,7 @@ func (uh UserHandler) CreatePost() gin.HandlerFunc {
 			c.Status(http.StatusBadRequest)
 			return
 		}
+		request.CreateTime = time.Now()
 		value, exist := c.Get("authUser")
 		if !exist {
 			c.Status(http.StatusBadRequest)

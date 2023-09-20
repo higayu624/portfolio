@@ -36,11 +36,6 @@ type authResponse struct {
 	Post        entity.Post `gorm:"foreignKey:UserId"`
 }
 
-type SignUpResponse struct {
-	MailAddress string `json:"mail_address"`
-	JWT         string `json:"jwt"`
-}
-
 func (lh LoginHandler) Login() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var request entity.EmailLoginRequest
@@ -69,10 +64,6 @@ func (lh LoginHandler) Login() gin.HandlerFunc {
 			return
 		}
 
-		// 構造体の詰め替え
-		response := refillToAuthResponse(authUser)
-		response.JWT = token
-
 		// TODO: values := [] string{token, authUser.MailAddress}
 		cookie := new(http.Cookie)
 		cookie.Value = authUser.MailAddress // Cookieに入れる値
@@ -81,7 +72,7 @@ func (lh LoginHandler) Login() gin.HandlerFunc {
 		c.SetCookie("mailAddress", cookie.Value, 3600, "/", "localhost", true, true)
 		cookie.Value = token // Cookieに入れる値
 		c.SetCookie("token", cookie.Value, 3600, "/", "localhost", true, true)
-		c.JSON(http.StatusOK, response)
+		c.JSON(http.StatusOK, true)
 	}
 }
 
