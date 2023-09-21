@@ -5,6 +5,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useLoginContext } from "../../context/AppContext";
 import { useRouter } from "next/router";
 import { ChangeEvent, useState } from "react";
+import { useMutateAuth } from "../../hooks/useMutateAuth";
+import { hiroshimas } from "../../../data/hiroshima";
+import { string } from "zod";
 
 type Zipcode = {
   main: string;
@@ -20,6 +23,11 @@ interface SignUpForm {
   name: string;
   email: string;
   password: string;
+  familyName: string;
+  givenName: string;
+  displayName: string;
+  place1: number;
+  place2: number;
 }
 
 const SignUp: React.FC = () => {
@@ -75,6 +83,7 @@ const SignUp: React.FC = () => {
 
   const { isLogin, setLogin } = useLoginContext();
   const router = useRouter();
+  const { signUpMutation, loginMutation } = useMutateAuth();
   const {
     register,
     handleSubmit,
@@ -84,10 +93,34 @@ const SignUp: React.FC = () => {
     resolver: zodResolver(validationSignupSchema),
   });
 
-  const onSubmit = (data: SignUpForm) => {
+  const toId = (place: string) => {
+    const split = place.split(/(市|町)/);
+    const agreement = hiroshimas.filter(
+      (hirosima) => hirosima.name.indexOf(split[0]) === 0
+    );
+    return agreement[0].id;
+  };
+
+  const onSubmit = async (data: SignUpForm) => {
     console.log(data);
-    setLogin(true);
-    router.push("/");
+
+    await signUpMutation
+      .mutateAsync({
+        mail_address: data.email,
+        pass: data.password,
+        given_name: data.givenName,
+        family_name: data.familyName,
+        user_role: 0,
+        user_status: 0,
+        display_name: data.displayName,
+        place_id: toId(address.address2),
+      })
+      .then(() =>
+        loginMutation.mutate({
+          mail_address: data.email,
+          pass: data.password,
+        })
+      );
   };
 
   return (
@@ -150,6 +183,28 @@ const SignUp: React.FC = () => {
                   ? (("※" + errors.givenName?.message) as React.ReactNode)
                   : ""}
               </p>
+            </div>
+
+            <div className="mb-6">
+              <input
+                id="displayName"
+                type="displayName"
+                {...register("displayName")}
+                placeholder="displayName  (ニックネーム)"
+                className="
+              w-full
+              rounded-md
+              border
+              bordder-[#E9EDF4]
+              py-3
+              px-5
+              bg-[#FCFDFE]
+              text-base text-body-color
+              placeholder-[#ACB6BE]
+              outline-none
+              focus-visible:shadow-none
+              focus:border-primary"
+              />
             </div>
 
             <div className="mb-6">

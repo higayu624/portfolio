@@ -18,14 +18,17 @@ const LoginContext = React.createContext(
   {} as {
     isLogin: boolean;
     setLogin: Dispatch<React.SetStateAction<boolean>>;
+    jwt: string;
+    setJwt: Dispatch<React.SetStateAction<string>>;
   }
 );
 
 const LoginProvider = ({ children }: any) => {
   const [isLogin, setLogin] = React.useState(false);
+  const [jwt, setJwt] = React.useState("");
 
   return (
-    <LoginContext.Provider value={{ isLogin, setLogin }}>
+    <LoginContext.Provider value={{ isLogin, setLogin, jwt, setJwt }}>
       {children}
     </LoginContext.Provider>
   );
