@@ -44,18 +44,21 @@ func (lh LoginHandler) Login() gin.HandlerFunc {
 			c.Status(http.StatusBadRequest)
 			return
 		}
+
 		// requestのメールからuser情報を取得
 		authUser, err := lh.UserInteractor.GetUserByEmail(request.Email)
 		if err != nil {
 			c.JSON(http.StatusConflict, err)
 			return
 		}
+
 		// ハッシュ値でのパスワード比較
 		err = bcrypt.CompareHashAndPassword([]byte(authUser.Pass), []byte(request.Pass))
 		if err != nil {
 			c.Status(http.StatusBadRequest)
 			return
 		}
+
 		// token生成
 		token, err := GenerateToken(authUser.MailAddress)
 		if err != nil {
@@ -66,11 +69,11 @@ func (lh LoginHandler) Login() gin.HandlerFunc {
 
 		// TODO: values := [] string{token, authUser.MailAddress}
 		cookie := new(http.Cookie)
-		cookie.Value = authUser.MailAddress // Cookieに入れる値
+		cookie.Value = authUser.MailAddress // Cookieに入れる値　mailaddress
 		c.SetSameSite(http.SameSiteNoneMode)
 		// cookieセット TODO: *本番の時はlocalhostをそのサイトのドメインに変更する
 		c.SetCookie("mailAddress", cookie.Value, 3600, "/", "localhost", true, true)
-		cookie.Value = token // Cookieに入れる値
+		cookie.Value = token // Cookieに入れる値　token
 		c.SetCookie("token", cookie.Value, 3600, "/", "localhost", true, true)
 		c.JSON(http.StatusOK, true)
 	}

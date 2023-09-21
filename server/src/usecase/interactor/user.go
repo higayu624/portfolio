@@ -94,7 +94,11 @@ func (ui UserInteractor) GetPost(authUser *entity.User) (post *entity.Post, err 
 	return
 }
 
-func (ui UserInteractor) CreatePost(post *entity.Post) (response bool, err error) {
+func (ui UserInteractor) CreatePost(authUser *entity.User, post *entity.Post) (response bool, err error) {
+	response, err = ui.UserRepository.SoftDeletePost(authUser, post)
+	if err != nil {
+		log.Fatal("Repository Soft Delete Post have error")
+	}
 	response, err = ui.UserRepository.CreatePost(post)
 	if err != nil {
 		log.Fatal("userRepository have error", err)

@@ -14,7 +14,7 @@ type UserInputPort interface {
 	Withdrawal(request *entity.User) (response bool, err error)
 	UpdateUser(request *entity.User, authUser *entity.User) (response bool, err error)
 	GetPost(authUser *entity.User) (post *entity.Post, err error)
-	CreatePost(post *entity.Post) (response bool, err error)
+	CreatePost(authUser *entity.User, post *entity.Post) (response bool, err error)
 	DeletePost(authUser *entity.User, post *entity.Post) (response bool, err error)
 	UpdatePost(authUser *entity.User, post *entity.Post) (response bool, err error)
 }
@@ -28,4 +28,5 @@ type UserRepository interface {
 	InsertPost(authUser *entity.User) (post *entity.Post, err error)
 	CreatePost(post *entity.Post) (response bool, err error)
 	DeletePost(authUser *entity.User, post *entity.Post) (response bool, err error)
+	SoftDeletePost(authUser *entity.User, post *entity.Post) (bool, error)
 }

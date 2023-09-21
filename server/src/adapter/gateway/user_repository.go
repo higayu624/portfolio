@@ -89,12 +89,11 @@ func (ur UserRepository) DeleteUser(request *entity.User) (response bool, err er
 
 func (ur UserRepository) InsertPost(authUser *entity.User) (post *entity.Post, err error) {
 	post = &entity.Post{}
+	// TODO: delated_at がnilでないときは取得する
 	err = ur.dbHandler.Model(&authUser).Association("Post").Find(&post)
-	// commit
 	if err != nil {
 		return nil, err
 	}
-
 	return
 }
 
@@ -124,4 +123,18 @@ func (ur UserRepository) DeletePost(authUser *entity.User, post *entity.Post) (r
 	}
 	response = true
 	return
+}
+
+func (ur UserRepository) SoftDeletePost(authUser *entity.User, post *entity.Post) (bool, error) {
+	tx := ur.dbHandler.Begin()
+	if err := tx.Model(&authUser).Association("Post").Unscoped().Clear(); err != nil {
+		tx.Rollback()
+		return false, err
+	}
+	err := tx.Commit().Error
+	if err != nil {
+		return false, err
+	}
+	response := true
+	return response, nil
 }
