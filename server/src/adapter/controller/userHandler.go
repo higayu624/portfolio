@@ -25,7 +25,6 @@ type responseUserForHome struct {
 	GivenName   string `json:"given_name"`
 	FamilyName  string `json:"family_name"`
 	DisplayName string `json:"display_name"`
-	MailAddress string `json:"mail_address"`
 	PlaceID     int    `json:"place_id"`
 	Post        responsePostForHome
 }
