@@ -8,6 +8,7 @@ import (
 	"portfolioGo/usecase/port"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/copier"
 )
 
 type UserHandler struct {
@@ -20,6 +21,19 @@ func NewUserHandler(UserInteractor port.UserInputPort) *UserHandler {
 	}
 }
 
+type responseUserForHome struct {
+	GivenName   string `json:"given_name"`
+	FamilyName  string `json:"family_name"`
+	DisplayName string `json:"display_name"`
+	PlaceID     int    `json:"place_id"`
+	Post        responsePostForHome
+}
+
+type responsePostForHome struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+}
+
 func (uh UserHandler) GetUserPostByRecent() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		res, err := uh.UserInteractor.GetUserPostByRecent(c)
@@ -28,7 +42,8 @@ func (uh UserHandler) GetUserPostByRecent() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		c.JSON(http.StatusOK, res)
+		response := refillToResponseHome(res)
+		c.JSON(http.StatusOK, response)
 	}
 }
 
@@ -181,4 +196,16 @@ func (uh UserHandler) UpdatePost() gin.HandlerFunc {
 		}
 		c.JSON(http.StatusOK, response)
 	}
+}
+
+func refillToResponseHome(userPosts *entity.Users) []responseUserForHome {
+	var responseHome []responseUserForHome
+	for _, userPost := range *userPosts {
+		var responseUserForHome responseUserForHome
+		if err := copier.Copy(&responseUserForHome, &userPost); err != nil {
+			panic(err)
+		}
+		responseHome = append(responseHome, responseUserForHome)
+	}
+	return responseHome
 }
