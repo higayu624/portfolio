@@ -29,10 +29,17 @@ export default function MyModal({ onClose, visible, coupon }: any) {
       onClick={handleOnClose}
       className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center"
     >
-      <div className="bg-white p-5 rounded">
-        {coupon.map((coupon: any) => (
-          <ModalContent coupon={coupon} />
-        ))}
+      <div className="rounded overflow-hidden">
+        <div className="bg-slate-400">
+          <header className="flex justify-start items-center p-2 font-bold">
+            クーポン一覧
+          </header>
+        </div>
+        <div className="bg-white h-96 overflow-y-scroll p-5">
+          {coupon.map((coupon: any) => (
+            <ModalContent coupon={coupon} />
+          ))}
+        </div>
       </div>
     </div>
   );

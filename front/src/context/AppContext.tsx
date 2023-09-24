@@ -2,7 +2,7 @@ import React, { Dispatch, useContext } from "react";
 
 type PostInfo = {
   title: string;
-  desctiption: string;
+  description: string;
 };
 
 type UserInfo = {
@@ -18,17 +18,14 @@ const LoginContext = React.createContext(
   {} as {
     isLogin: boolean;
     setLogin: Dispatch<React.SetStateAction<boolean>>;
-    jwt: string;
-    setJwt: Dispatch<React.SetStateAction<string>>;
   }
 );
 
 const LoginProvider = ({ children }: any) => {
   const [isLogin, setLogin] = React.useState(false);
-  const [jwt, setJwt] = React.useState("");
 
   return (
-    <LoginContext.Provider value={{ isLogin, setLogin, jwt, setJwt }}>
+    <LoginContext.Provider value={{ isLogin, setLogin }}>
       {children}
     </LoginContext.Provider>
   );
@@ -38,6 +35,8 @@ const UserContext = React.createContext(
   {} as {
     userInfo: UserInfo;
     setUserInfo: Dispatch<React.SetStateAction<UserInfo>>;
+    post: PostInfo;
+    setPostInfo: Dispatch<React.SetStateAction<PostInfo>>;
   }
 );
 
@@ -50,12 +49,17 @@ const UserProvider = ({ children }: any) => {
     place_id: 0,
     post: {
       title: "",
-      desctiption: "",
+      description: "",
     },
   });
 
+  const [post, setPostInfo] = React.useState({
+    title: "",
+    description: "",
+  });
+
   return (
-    <UserContext.Provider value={{ userInfo, setUserInfo }}>
+    <UserContext.Provider value={{ userInfo, setUserInfo, post, setPostInfo }}>
       {children}
     </UserContext.Provider>
   );

@@ -8,7 +8,6 @@ import { useUserContext } from "../context/AppContext";
 
 export const useMutateCoupon = () => {
   const router = useRouter();
-  const { jwt } = useLoginContext();
   const { switchErrorHandling } = useError();
   const { userInfo, setUserInfo } = useUserContext();
 
@@ -27,7 +26,7 @@ export const useMutateCoupon = () => {
           place_id: userInfo.place_id,
           post: {
             title: userInfo.post.title,
-            desctiption: userInfo.post.desctiption,
+            description: userInfo.post.description,
           },
         };
         setUserInfo(newUserInfo);

@@ -6,6 +6,9 @@ import { useMutateCoupon } from "../../hooks/useMutateCoupon";
 import axios from "axios";
 import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/ja";
+import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
+import { useError } from "../../hooks/useError";
 
 dayjs.locale("ja");
 
@@ -16,20 +19,24 @@ interface CouponForm {
 }
 
 const Master: React.FC = () => {
-  const { userInfo } = useUserContext();
+  const { userInfo, setUserInfo } = useUserContext();
   const { postMutation } = useMutateCoupon();
-  console.log(userInfo);
-  const onClick = async () => {
-    await axios.get(`${process.env.REACT_APP_API_URL}/user`),
-      {
-        onSuccess: (res: any) => {
-          console.log(res.data);
-        },
-        onError: (err: any) => {
-          console.log("error");
-        },
-      };
-  };
+
+  async function getPostAsync() {
+    const url = `${process.env.REACT_APP_API_URL}/user/post`;
+    const response = await fetch(url, { mode: "cors", credentials: "include" });
+    const json = await response.json();
+    return json;
+  }
+
+  const { isLoading, error, data, refetch } = useQuery({
+    queryFn: () => {
+      return getPostAsync();
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
 
   const {
     register,
@@ -44,7 +51,7 @@ const Master: React.FC = () => {
 
   const clickCopy = () => {
     setValue("title", userInfo.post.title);
-    setValue("description", userInfo.post.desctiption);
+    setValue("description", userInfo.post.description);
   };
 
   const submitWorkspaceHandler = async (data: CouponForm) => {
@@ -56,8 +63,28 @@ const Master: React.FC = () => {
       })
       .then(() => {
         reset();
+        refetch();
       });
   };
+
+  useEffect(() => {
+    console.log("fetch data", data);
+    console.log("isLoading", isLoading);
+    console.log("error", error);
+    if (!isLoading && !error) {
+      setUserInfo({
+        given_name: userInfo.given_name,
+        family_name: userInfo.family_name,
+        display_name: userInfo.display_name,
+        mail_address: userInfo.mail_address,
+        place_id: userInfo.place_id,
+        post: {
+          title: data.title,
+          description: data.description,
+        },
+      });
+    }
+  }, [data]);
 
   return (
     <>
@@ -67,12 +94,12 @@ const Master: React.FC = () => {
           <div className="grid grid-cols-3 w-4/5 max-w-screen-md">
             <p>タイトル</p>
             <p className="flex justify-center col-span-2 mb-3">
-              {userInfo.post.title ? userInfo.post.title : "--"}
+              {isLoading ? "Loading" : userInfo.post.title}
             </p>
 
             <p>詳細</p>
             <p className="flex justify-center col-span-2 mb-3">
-              {userInfo.post.desctiption ? userInfo.post.desctiption : "--"}
+              {isLoading ? "Loading" : userInfo.post.description}
             </p>
           </div>
           <button

@@ -58,15 +58,6 @@ const Home: NextPage = () => {
 
   console.log("In home:", allPost);
 
-  const onClick = (clickedId: number) => {
-    console.log(
-      "id=",
-      clickedId,
-      allPost.filter(({ id }) => id === clickedId)
-    );
-    console.log("length", allPost.filter(({ id }) => id === clickedId).length);
-  };
-
   return (
     <>
       <div className="flex items-center justify-center border">
@@ -89,13 +80,16 @@ const Home: NextPage = () => {
                         stroke="black"
                         strokeWidth={0.5}
                         fill={numToColor(
-                          allPost.filter(({ id }) => id === feature.id).length
+                          allPost.filter(
+                            ({ place_id }) => place_id === feature.id
+                          ).length
                         )}
                         onClick={() => {
-                          onClick(feature.id);
                           setshowMyModal(true);
                           setviewPost(
-                            allPost.filter(({ id }) => id === feature.id)
+                            allPost.filter(
+                              ({ place_id }) => place_id === feature.id
+                            )
                           );
                         }}
                       />

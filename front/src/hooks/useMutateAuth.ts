@@ -8,7 +8,7 @@ import { useUserContext } from "../context/AppContext";
 
 export const useMutateAuth = () => {
   const router = useRouter();
-  const { setLogin, setJwt } = useLoginContext();
+  const { setLogin } = useLoginContext();
   const { switchErrorHandling } = useError();
   const { setUserInfo } = useUserContext();
 
@@ -19,20 +19,8 @@ export const useMutateAuth = () => {
       }),
     {
       onSuccess: (res) => {
-        setJwt(res.data.jwt);
         setLogin(true);
         router.push("/master");
-        setUserInfo({
-          given_name: res.data.given_name,
-          family_name: res.data.family_name,
-          display_name: res.data.display_name,
-          mail_address: res.data.mail_address,
-          place_id: res.data.place_id,
-          post: {
-            title: res.data.Post.title,
-            desctiption: res.data.Post.desctiption,
-          },
-        }); //resに含まれる情報をユーザ情報としてcontextに保存する
       },
       onError: (err: any) => {
         switchErrorHandling(err.message);

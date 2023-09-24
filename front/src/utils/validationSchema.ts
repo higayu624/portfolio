@@ -42,4 +42,5 @@ export const validationPostSchema = z.object({
     .string()
     .nonempty("タイトルは必須です")
     .max(20, "20文字以上は入力できません."),
+  description: z.string(),
 });
