@@ -6,6 +6,8 @@ type User struct {
 	GivenName   string `json:"given_name"`
 	FamilyName  string `json:"family_name"`
 	DisplayName string `json:"display_name"`
+	WebLink     string `json:"web_link"`
+	Address     string `json:"address"`
 	MailAddress string `json:"mail_address"`
 	UserRole    int    `json:"user_role"`
 	UserStatus  int    `json:"user_status"`
