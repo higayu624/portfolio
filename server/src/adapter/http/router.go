@@ -16,6 +16,7 @@ var (
 	userAPIRoot   = "user"
 	loginAPIRoot  = "login"
 	signUpAPIRoot = "signUp"
+	logoutAPIRoot = "logout"
 	allAPIRoot    = "home"
 )
 
@@ -62,6 +63,7 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 	LoginHandler := controller.NewLoginHandler(*UserInteractor)
 	router.POST(loginAPIRoot, LoginHandler.Login())
 	router.POST(signUpAPIRoot, LoginHandler.SignUp())
+	router.POST(logoutAPIRoot, LoginHandler.Logout())
 
 	// init Page
 	allHandler := controller.NewUserHandler(*UserInteractor)

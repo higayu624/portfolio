@@ -103,6 +103,17 @@ func (lh LoginHandler) SignUp() gin.HandlerFunc {
 	}
 }
 
+// logout
+func (lh LoginHandler) Logout() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.SetSameSite(http.SameSiteNoneMode)
+		c.SetCookie("mailAddress", "", -1, "/", "localhost", true, true)
+		c.SetCookie("token", "", -1, "/", "localhost", true, true)
+		Response := true
+		c.JSON(http.StatusOK, Response)
+	}
+}
+
 func refillToAuthResponse(user *entity.User) *authResponse {
 	var authResponse authResponse
 	if err := copier.Copy(&authResponse, &user); err != nil {
