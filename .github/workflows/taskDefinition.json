@@ -15,21 +15,7 @@
             "containerPort": "7001",
             "protocol": "tcp"
           }
-        ],
-        "secrets": [
-          {
-            "name": "ENV",
-            "valueFrom": "dev"
-          }
-        ],
-        "logConfiguration": {
-          "logDriver": "awslogs",
-          "options": {
-            "awslogs-group": "/ecs/portfolio",
-            "awslogs-region": "ap-northeast-1",
-            "awslogs-stream-prefix": "portfolio"
-          }
-        }
+        ]
       }
     ],
     "runtimePlatform": {
