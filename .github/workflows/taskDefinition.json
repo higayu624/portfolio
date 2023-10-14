@@ -1,0 +1,49 @@
+{
+    "requiresCompatibilities": [
+      "FARGATE"
+    ],
+    "inferenceAccelerators": [],
+    "containerDefinitions": [
+      {
+        "name": "portfolioGo-container8",
+        "image": "portfolio",
+        "resourceRequirements": null,
+        "essential": true,
+        "portMappings": [
+          {
+            "hostPort": 7001,
+            "containerPort": "7001",
+            "protocol": "tcp"
+          }
+        ],
+        "secrets": [
+          {
+            "name": "ENV",
+            "valueFrom": "dev"
+          }
+        ],
+        "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+            "awslogs-group": "/ecs/portfolio",
+            "awslogs-region": "ap-northeast-1",
+            "awslogs-stream-prefix": "portfolio"
+          }
+        }
+      }
+    ],
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "volumes": [],
+    "networkMode": "awsvpc",
+    "memory": "512",
+    "cpu": "256",
+    "executionRoleArn": "ecsTaskExecutionRole",
+    "family": "portfolio",
+    "taskRoleArn": "",
+    "placementConstraints": []
+  }
+  
+  
