@@ -9,7 +9,7 @@ import (
 type UserInputPort interface {
 	GetUserById(c context.Context, userId int) (user *entity.User, err error)
 	GetUserByEmail(email string) (user *entity.User, err error)
-	GetUserPostByRecent(c context.Context) (users *entity.Users, err error)
+	GetUserPostByRecent() (users *entity.Users, err error)
 	SignUp(request *entity.User) error
 	Withdrawal(request *entity.User) (response bool, err error)
 	UpdateUser(request *entity.User, authUser *entity.User) (response bool, err error)
