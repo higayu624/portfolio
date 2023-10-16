@@ -2,12 +2,10 @@
     "requiresCompatibilities": [
       "FARGATE"
     ],
-    "inferenceAccelerators": [],
     "containerDefinitions": [
       {
-        "name": "portfolioGo-container9",
+        "name": "portfolioGo-container8",
         "image": "latest",
-        "resourceRequirements": null,
         "essential": true,
         "portMappings": [
           {
@@ -22,14 +20,9 @@
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "volumes": [],
-    "networkMode": "awsvpc",
     "memory": "512",
     "cpu": "256",
     "executionRoleArn": "ecsTaskExecutionRole",
-    "family": "portfolio",
-    "taskRoleArn": "",
-    "placementConstraints": []
   }
   
   
