@@ -5,8 +5,8 @@
     "inferenceAccelerators": [],
     "containerDefinitions": [
       {
-        "name": "portfolioGo-container8",
-        "image": "portfolio",
+        "name": "portfolioGo-container9",
+        "image": "latest",
         "resourceRequirements": null,
         "essential": true,
         "portMappings": [
