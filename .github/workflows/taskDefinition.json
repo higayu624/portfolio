@@ -6,7 +6,7 @@
     "containerDefinitions": [
       {
         "name": "portfolioGo-container8",
-        "image": "latest",
+        "image": "portfolio",
         "resourceRequirements": null,
         "essential": true,
         "portMappings": [
