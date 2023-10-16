@@ -5,6 +5,8 @@ export const validationSignupSchema = z.object({
 
   givenName: z.string().nonempty("名前は必須です."),
 
+  displayName: z.string(),
+
   email: z
     .string()
     .nonempty("メールアドレスは必須です.")
@@ -17,13 +19,15 @@ export const validationSignupSchema = z.object({
 
   place1: z
     .string()
-    .nonempty("お店の住所は必須です.")
+    .nonempty("お店の郵便番号は必須です.")
     .length(3, "正しくない桁数です."),
 
   place2: z
     .string()
-    .nonempty("お店の住所は必須です.")
+    .nonempty("お店の郵便番号は必須です.")
     .length(4, "正しくない桁数です."),
+
+  address: z.string().nonempty("お店の住所は必須です."),
 });
 
 export const validationLoginSchema = z.object({
@@ -35,6 +39,21 @@ export const validationLoginSchema = z.object({
     .string()
     .nonempty("パスワードは必須です.")
     .min(4, "パスワードは4文字以上で入力してください"),
+});
+
+export const validationUpdateUserSchema = z.object({
+  display_name: z.string(),
+
+  family_name: z.string().nonempty("名前は必須です."),
+
+  given_name: z.string().nonempty("名前は必須です."),
+
+  web_link: z
+    .string()
+    .url("正しいURLの形式ではありません.")
+    .or(z.string().length(0)),
+
+  address: z.string().nonempty("お店の住所は必須です."),
 });
 
 export const validationPostSchema = z.object({

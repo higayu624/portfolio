@@ -49,9 +49,9 @@ const Home: NextPage = () => {
     if (num >= 1) {
       color = "#ADD8E6";
     } else if (num >= 10) {
-      color = "blue";
+      color = "#ADD8E6";
     } else if (num >= 30) {
-      color = "red";
+      color = "#ADD8E6";
     }
     return color;
   }; //未使用の関数
@@ -80,9 +80,10 @@ const Home: NextPage = () => {
                         stroke="black"
                         strokeWidth={0.5}
                         fill={numToColor(
-                          allPost.filter(
-                            ({ place_id }) => place_id === feature.id
-                          ).length
+                          allPost
+                            .filter((c: any) => c.Post.title !== "")
+                            .filter(({ place_id }) => place_id === feature.id)
+                            .length
                         )}
                         onClick={() => {
                           setshowMyModal(true);

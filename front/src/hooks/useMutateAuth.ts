@@ -4,13 +4,11 @@ import { useMutation } from "react-query";
 import { useError } from "./useError";
 import axios from "axios";
 import { Credential, RequiredInformation } from "../types";
-import { useUserContext } from "../context/AppContext";
 
 export const useMutateAuth = () => {
   const router = useRouter();
   const { setLogin } = useLoginContext();
   const { switchErrorHandling } = useError();
-  const { setUserInfo } = useUserContext();
 
   const loginMutation = useMutation(
     async (user: Credential) =>
