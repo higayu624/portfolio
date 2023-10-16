@@ -22,7 +22,7 @@
     },
     "memory": "512",
     "cpu": "256",
-    "executionRoleArn": "ecsTaskExecutionRole",
+    "executionRoleArn": "ecsTaskExecutionRole"
   }
   
   
