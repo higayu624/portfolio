@@ -17,5 +17,8 @@ RUN go get -u gorm.io/driver/postgres
 RUN go get -u github.com/gin-contrib/sessions
 RUN go get -u github.com/cosmtrek/air/ && go build -o /go/bin/air github.com/cosmtrek/air
 RUN go get -u github.com/jinzhu/copier
+RUN go install github.com/golang/mock/mockgen@latest
+RUN go get github.com/golang/mock/gomock
+RUN cd usecase/port && mockgen -source=user.go -destination=./../interactor/mock/user.go -package=interactor
 
 CMD ["air", "-c", ".air.toml"]

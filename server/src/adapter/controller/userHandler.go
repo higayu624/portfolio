@@ -38,7 +38,7 @@ type responsePostForHome struct {
 
 func (uh UserHandler) GetUserPostByRecent() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		res, err := uh.UserInteractor.GetUserPostByRecent(c)
+		res, err := uh.UserInteractor.GetUserPostByRecent()
 		if err != nil {
 			c.Error(err)
 			c.Abort()
@@ -144,7 +144,7 @@ func (uh UserHandler) CreatePost() gin.HandlerFunc {
 			return
 		}
 		authUser := value.(*entity.User)
-		request.UserId = uint(authUser.ID)
+		request.UserID = uint(authUser.ID)
 		post, err := uh.UserInteractor.CreatePost(authUser, request)
 		if err != nil {
 			c.JSON(http.StatusConflict, err)
