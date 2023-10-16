@@ -12,6 +12,12 @@ export type RequiredInformation = {
   user_role: number;
   user_status: number;
   place_id: number;
+  web_link: string;
+  address: string;
+  post: {
+    title: string;
+    description: string;
+  };
 };
 
 export type NewPost = {

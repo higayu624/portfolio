@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useUserContext } from "../../context/AppContext";
 import { validationPostSchema } from "../../utils/validationSchema";
 import { useMutateCoupon } from "../../hooks/useMutateCoupon";
 import axios from "axios";
@@ -9,6 +8,8 @@ import "dayjs/locale/ja";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useError } from "../../hooks/useError";
+import { useLoginContext } from "../../context/AppContext";
+import { useRouter } from "next/router";
 
 dayjs.locale("ja");
 
@@ -19,7 +20,13 @@ interface CouponForm {
 }
 
 const Master: React.FC = () => {
-  const { userInfo, setUserInfo } = useUserContext();
+  const { isLogin, setLogin } = useLoginContext();
+  const router = useRouter();
+
+  const [latestPost, setLatestPost] = useState({
+    title: "",
+    description: "",
+  });
   const { postMutation } = useMutateCoupon();
 
   async function getPostAsync() {
@@ -50,8 +57,8 @@ const Master: React.FC = () => {
   });
 
   const clickCopy = () => {
-    setValue("title", userInfo.post.title);
-    setValue("description", userInfo.post.description);
+    setValue("title", latestPost.title);
+    setValue("description", latestPost.description);
   };
 
   const submitWorkspaceHandler = async (data: CouponForm) => {
@@ -62,44 +69,43 @@ const Master: React.FC = () => {
         status: true,
       })
       .then(() => {
+        setLatestPost({
+          title: data.title,
+          description: data.description,
+        });
         reset();
         refetch();
       });
   };
 
   useEffect(() => {
-    console.log("fetch data", data);
-    console.log("isLoading", isLoading);
-    console.log("error", error);
-    if (!isLoading && !error) {
-      setUserInfo({
-        given_name: userInfo.given_name,
-        family_name: userInfo.family_name,
-        display_name: userInfo.display_name,
-        mail_address: userInfo.mail_address,
-        place_id: userInfo.place_id,
-        post: {
+    if (!isLogin) {
+      window.alert("ログインしてください");
+      router.push("/");
+    } else {
+      if (!isLoading && !error) {
+        setLatestPost({
           title: data.title,
           description: data.description,
-        },
-      });
+        });
+      }
     }
   }, [data]);
 
   return (
     <>
-      <div className="flex flex-col justify-center items-center">
+      <div className="flex flex-col justify-center items-center font-medium">
         <div className="border flex flex-col justify-center items-center rounded-lg  w-4/5 max-w-screen-md">
           <div className="mb-3">前回の投稿</div>
           <div className="grid grid-cols-3 w-4/5 max-w-screen-md">
             <p>タイトル</p>
             <p className="flex justify-center col-span-2 mb-3">
-              {isLoading ? "Loading" : userInfo.post.title}
+              {isLoading ? "Loading" : latestPost.title}
             </p>
 
             <p>詳細</p>
             <p className="flex justify-center col-span-2 mb-3">
-              {isLoading ? "Loading" : userInfo.post.description}
+              {isLoading ? "Loading" : latestPost.description}
             </p>
           </div>
           <button
@@ -114,9 +120,11 @@ const Master: React.FC = () => {
       <form className="" onSubmit={handleSubmit(submitWorkspaceHandler)}>
         <div className="pt-2 flex flex-col justify-center items-center">
           <div className="flex flex-col py-2 justify-center items-center border rounded-lg w-4/5 max-w-screen-md">
-            新規投稿
+            <p className=" font-medium">新規投稿</p>
             <div className="mt-2 grid grid-cols-3 w-4/5">
-              <label htmlFor="title">タイトル</label>
+              <label htmlFor="title" className=" font-medium">
+                タイトル
+              </label>
               <textarea
                 id="title"
                 rows={3}
@@ -131,7 +139,9 @@ const Master: React.FC = () => {
               </p>
             </div>
             <div className="mt-2 grid grid-cols-3 w-4/5 max-w-screen-md">
-              <label htmlFor="description">詳細</label>
+              <label htmlFor="description" className=" font-medium">
+                詳細
+              </label>
               <textarea
                 id="description"
                 {...register("description")}

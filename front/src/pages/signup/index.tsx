@@ -17,6 +17,7 @@ type Address = {
   address1: string;
   address2: string;
   address3: string;
+  address: string;
 };
 
 interface SignUpForm {
@@ -28,6 +29,7 @@ interface SignUpForm {
   displayName: string;
   place1: number;
   place2: number;
+  address: string;
 }
 
 const SignUp: React.FC = () => {
@@ -39,6 +41,7 @@ const SignUp: React.FC = () => {
     address1: "",
     address2: "",
     address3: "",
+    address: "",
   });
 
   const updateZipcodeMain = (e: ChangeEvent<HTMLInputElement>) => {
@@ -47,6 +50,7 @@ const SignUp: React.FC = () => {
       address1: "",
       address2: "",
       address3: "",
+      address: "",
     });
   };
   const updateZipcodeSub = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -55,6 +59,7 @@ const SignUp: React.FC = () => {
       address1: "",
       address2: "",
       address3: "",
+      address: "",
     });
     if (e.target.value.length === 4 && zipcode.main.length === 3) {
       try {
@@ -73,6 +78,7 @@ const SignUp: React.FC = () => {
             address1: result["address1"],
             address2: result["address2"],
             address3: result["address3"],
+            address: result["address2"] + result["address3"],
           });
         }
       } catch {
@@ -98,7 +104,7 @@ const SignUp: React.FC = () => {
     const agreement = hiroshimas.filter(
       (hirosima) => hirosima.name.indexOf(split[0]) === 0
     );
-    return agreement[0].id;
+    return agreement.length > 0 ? agreement[0].id : 0;
   };
 
   const onSubmit = async (data: SignUpForm) => {
@@ -114,6 +120,12 @@ const SignUp: React.FC = () => {
         user_status: 0,
         display_name: data.displayName,
         place_id: toId(address.address2),
+        web_link: "",
+        address: address.address,
+        post: {
+          title: "",
+          description: "",
+        },
       })
       .then(() =>
         loginMutation.mutate({
@@ -132,24 +144,13 @@ const SignUp: React.FC = () => {
           </div>
           <form onSubmit={handleSubmit(onSubmit)} className="">
             <div className="mb-6">
+              姓
               <input
                 id="familyName"
                 type="familyName"
                 {...register("familyName")}
                 placeholder="familyName  (例：山田)"
-                className="
-              w-full
-              rounded-md
-              border
-              bordder-[#E9EDF4]
-              py-3
-              px-5
-              bg-[#FCFDFE]
-              text-base text-body-color
-              placeholder-[#ACB6BE]
-              outline-none
-              focus-visible:shadow-none
-              focus:border-primary"
+                className="form-input"
               />
               <p className="text-rose-600">
                 {errors.familyName?.message
@@ -159,24 +160,13 @@ const SignUp: React.FC = () => {
             </div>
 
             <div className="mb-6">
+              名
               <input
                 id="givenName"
                 type="givenName"
                 {...register("givenName")}
                 placeholder="givenName  (例：太郎)"
-                className="
-              w-full
-              rounded-md
-              border
-              bordder-[#E9EDF4]
-              py-3
-              px-5
-              bg-[#FCFDFE]
-              text-base text-body-color
-              placeholder-[#ACB6BE]
-              outline-none
-              focus-visible:shadow-none
-              focus:border-primary"
+                className="form-input"
               />
               <p className="text-rose-600">
                 {errors.givenName?.message
@@ -186,46 +176,24 @@ const SignUp: React.FC = () => {
             </div>
 
             <div className="mb-6">
+              表示名
               <input
                 id="displayName"
                 type="displayName"
                 {...register("displayName")}
                 placeholder="displayName  (ニックネーム)"
-                className="
-              w-full
-              rounded-md
-              border
-              bordder-[#E9EDF4]
-              py-3
-              px-5
-              bg-[#FCFDFE]
-              text-base text-body-color
-              placeholder-[#ACB6BE]
-              outline-none
-              focus-visible:shadow-none
-              focus:border-primary"
+                className="form-input"
               />
             </div>
 
             <div className="mb-6">
+              メールアドレス
               <input
                 id="email"
                 type="email"
                 {...register("email")}
                 placeholder="email"
-                className="
-              w-full
-              rounded-md
-              border
-              bordder-[#E9EDF4]
-              py-3
-              px-5
-              bg-[#FCFDFE]
-              text-base text-body-color
-              placeholder-[#ACB6BE]
-              outline-none
-              focus-visible:shadow-none
-              focus:border-primary"
+                className="form-input"
               />
               <p className="text-rose-600">
                 {errors.email?.message
@@ -235,24 +203,13 @@ const SignUp: React.FC = () => {
             </div>
 
             <div className="mb-6">
+              パスワード
               <input
                 id="password"
                 type="password"
                 {...register("password")}
                 placeholder="password"
-                className="
-                w-full
-                        rounded-md
-                        border
-                        bordder-[#E9EDF4]
-                        py-3
-                        px-5
-                        bg-[#FCFDFE]
-                        text-base text-body-color
-                        placeholder-[#ACB6BE]
-                        outline-none
-                        focus-visible:shadow-none
-                        focus:border-primary"
+                className="form-input"
               />
               <p className="text-rose-600">
                 {errors.password?.message
@@ -261,7 +218,7 @@ const SignUp: React.FC = () => {
               </p>
             </div>
 
-            <div>
+            <div className="mb-6">
               <div className="flex justify-start items-center">
                 <span>〒</span>
                 <input
@@ -317,13 +274,29 @@ const SignUp: React.FC = () => {
               </p>
             </div>
 
-            <div className="py-4">
-              <p>郵便番号による住所</p>
-              <div>
-                <p>都道府県： {address.address1}</p>
-                <p>市区町村： {address.address2}</p>
-                <p>町域： {address.address3}</p>
-              </div>
+            <div className="mb-6">
+              <input
+                id="address"
+                type="address"
+                {...register("address")}
+                placeholder="address(広島市・・・)"
+                className="form-input"
+                value={address.address}
+                onChange={(e) => {
+                  setAddress({ ...address, address: e.target.value });
+                }}
+              />
+              <p>
+                ※
+                <span className="underline">
+                  広島県以下の住所を登録してください。
+                </span>
+              </p>
+              <p className="text-rose-600">
+                {errors.address?.message
+                  ? (("※" + errors.address?.message) as React.ReactNode)
+                  : ""}
+              </p>
             </div>
 
             <div className="flex items-center justify-center">
