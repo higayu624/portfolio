@@ -78,7 +78,7 @@ jobs:
         cd server && docker build -t portfolio -f docker/go/Dockerfile .
         docker tag portfolio:latest public.ecr.aws/l3o3g0h0/portfolio:latest
         docker push public.ecr.aws/l3o3g0h0/portfolio:latest
-        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+        echo "image=latest" >> $GITHUB_OUTPUT
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
