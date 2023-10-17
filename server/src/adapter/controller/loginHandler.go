@@ -72,9 +72,9 @@ func (lh LoginHandler) Login() gin.HandlerFunc {
 		cookie.Value = authUser.MailAddress // Cookieに入れる値　mailaddress
 		c.SetSameSite(http.SameSiteNoneMode)
 		// cookieセット TODO: *本番の時はlocalhostをそのサイトのドメインに変更する
-		c.SetCookie("mailAddress", cookie.Value, 3600, "/", "18.183.235.67", true, true)
+		c.SetCookie("mailAddress", cookie.Value, 3600, "/", "18.183.235.67:7001", true, true)
 		cookie.Value = token // Cookieに入れる値　token
-		c.SetCookie("token", cookie.Value, 3600, "/", "18.183.235.67", true, true)
+		c.SetCookie("token", cookie.Value, 3600, "/", "18.183.235.67:7001", true, true)
 		c.JSON(http.StatusOK, true)
 	}
 }
