@@ -4,7 +4,7 @@
     ],
     "containerDefinitions": [
       {
-        "name": "portfolio",
+        "name": "portfolioGo-container8",
         "image": "latest",
         "essential": true,
         "portMappings": [
