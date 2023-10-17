@@ -23,7 +23,7 @@
     "memory": "512",
     "cpu": "256",
     "executionRoleArn": "ecsTaskExecutionRole",
-    "family": "portfolio-task-definition8",
+    "family": "portfolio-task-definition8:1",
     "networkMode": "awsvpc"
   }
   
