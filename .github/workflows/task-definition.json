@@ -5,13 +5,22 @@
     "containerDefinitions": [
       {
         "name": "portfolioGo-container8",
-        "image": "latest",
+        "image": "public.ecr.aws/l3o3g0h0/portfolio:latest",
         "essential": true,
         "portMappings": [
           {
+            "name": "portfoliogo-container8-80-tcp",
+            "containerPort": 80,
+            "hostPort": 80,
+            "protocol": "tcp",
+            "appProtocol": "http"
+          },
+          {
+            "name": "portfoliogo-container8-7001-tcp",
+            "containerPort": 7001,
             "hostPort": 7001,
-            "containerPort": "7001",
-            "protocol": "tcp"
+            "protocol": "tcp",
+            "appProtocol": "http"
           }
         ]
       }
@@ -20,11 +29,18 @@
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "memory": "3",
-    "cpu": "3",
-    "executionRoleArn": "ecsTaskExecutionRole",
+    "cpu": "1024",
+    "memory": "3072",
     "family": "portfolio-task-definition8",
-    "networkMode": "awsvpc"
+    "taskRoleArn": "arn:aws:iam::608603179347:role/firstRole",
+    "executionRoleArn": "arn:aws:iam::608603179347:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "tags": [
+      {
+          "key": "Name",
+          "value": "portfolio-task-definition8"
+      }
+  ]
   }
   
   
