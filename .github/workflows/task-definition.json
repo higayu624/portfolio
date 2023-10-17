@@ -2,6 +2,7 @@
     "requiresCompatibilities": [
       "FARGATE"
     ],
+    "taskDefinitionArn": "arn:aws:ecs:ap-northeast-1:608603179347:task-definition/portfolio-task-definition8:1",
     "containerDefinitions": [
       {
         "name": "portfolioGo-container8",
