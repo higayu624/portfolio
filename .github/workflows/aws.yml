@@ -33,9 +33,9 @@ on:
 env:
   AWS_REGION: ap-northeast-1                 # set this to your preferred AWS region, e.g. us-west-1
   ECR_REPOSITORY: portfolio           # set this to your Amazon ECR repository name
-  ECS_SERVICE: portfolio_service8                 # set this to your Amazon ECS service name
-  ECS_CLUSTER: portfolio_cluster               # set this to your Amazon ECS cluster name
-  ECS_TASK_DEFINITION: taskDefinition.json # set this to the path to your Amazon ECS task definition
+  ECS_SERVICE: portfolio-service8                 # set this to your Amazon ECS service name
+  ECS_CLUSTER: portfolio-cluster               # set this to your Amazon ECS cluster name
+  ECS_TASK_DEFINITION: .github/workflows/task-definition.json     # set this to the path to your Amazon ECS task definition
                                                # file, e.g. .aws/task-definition.json
   CONTAINER_NAME: portfolioGo-container8           # set this to the name of the container in the
                                                # containerDefinitions section of your task definition
@@ -56,6 +56,7 @@ jobs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
+        role-to-assume: ${{ inputs.role-to-assume }}
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
@@ -73,9 +74,11 @@ jobs:
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        cd server && docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f docker/go/Dockerfile .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+        aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/l3o3g0h0
+        cd server && docker build -t portfolio -f docker/go/Dockerfile .
+        docker tag portfolio:latest public.ecr.aws/l3o3g0h0/portfolio:latest
+        docker push public.ecr.aws/l3o3g0h0/portfolio:latest
+        echo "image=latest" >> $GITHUB_OUTPUT
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
@@ -91,4 +94,4 @@ jobs:
         task-definition: ${{ steps.task-def.outputs.task-definition }}
         service: ${{ env.ECS_SERVICE }}
         cluster: ${{ env.ECS_CLUSTER }}
-        wait-for-service-stability: true
+        wait-for-service-stability: false
