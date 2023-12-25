@@ -2,41 +2,19 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import { validationSignupSchema } from "../../utils/validationSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useLoginContext } from "../../context/AppContext";
-import { useRouter } from "next/router";
 import { ChangeEvent, useState } from "react";
 import { useMutateAuth } from "../../hooks/useMutateAuth";
-import { hiroshimas } from "../../../data/hiroshima";
-import { string } from "zod";
-
-type Zipcode = {
-  main: string;
-  sub: string;
-};
-type Address = {
-  address1: string;
-  address2: string;
-  address3: string;
-  address: string;
-};
-
-interface SignUpForm {
-  name: string;
-  email: string;
-  password: string;
-  familyName: string;
-  givenName: string;
-  displayName: string;
-  place1: number;
-  place2: number;
-  address: string;
-}
+import { Zipcode, Address, SignUpForm } from "../../types";
+import { toId } from "../../utils/addressToId";
+import { InputFormWithZod } from "../../components/InputFormWithZod";
 
 const SignUp: React.FC = () => {
+  //郵便番号のstate
   const [zipcode, setZipcodeMain] = useState<Zipcode>({
     main: "",
     sub: "",
   });
+  //住所のstate
   const [address, setAddress] = useState<Address>({
     address1: "",
     address2: "",
@@ -44,6 +22,7 @@ const SignUp: React.FC = () => {
     address: "",
   });
 
+  //郵便番号を変更するたびに住所も変更する.
   const updateZipcodeMain = (e: ChangeEvent<HTMLInputElement>) => {
     setZipcodeMain({ main: e.target.value, sub: "" });
     setAddress({
@@ -53,6 +32,8 @@ const SignUp: React.FC = () => {
       address: "",
     });
   };
+  //郵便番号を変更するたびに住所も変更する.
+  //郵便番号が正しい書式で入力された際に郵便局のapiから住所をfetchする.
   const updateZipcodeSub = async (e: ChangeEvent<HTMLInputElement>) => {
     setZipcodeMain({ ...zipcode, sub: e.target.value });
     setAddress({
@@ -87,8 +68,7 @@ const SignUp: React.FC = () => {
     }
   };
 
-  const { isLogin, setLogin } = useLoginContext();
-  const router = useRouter();
+  //signUp後にloginも行う
   const { signUpMutation, loginMutation } = useMutateAuth();
   const {
     register,
@@ -99,17 +79,9 @@ const SignUp: React.FC = () => {
     resolver: zodResolver(validationSignupSchema),
   });
 
-  const toId = (place: string) => {
-    const split = place.split(/(市|町)/);
-    const agreement = hiroshimas.filter(
-      (hirosima) => hirosima.name.indexOf(split[0]) === 0
-    );
-    return agreement.length > 0 ? agreement[0].id : 0;
-  };
-
+  //submitボタンを押したときに実行する関数
+  //signUpMutationでsignUpができたら同様のデータを用いてloginMutationでloginする.
   const onSubmit = async (data: SignUpForm) => {
-    console.log(data);
-
     await signUpMutation
       .mutateAsync({
         mail_address: data.email,
@@ -144,14 +116,10 @@ const SignUp: React.FC = () => {
           </div>
           <form onSubmit={handleSubmit(onSubmit)} className="">
             <div className="mb-6">
-              姓
-              <input
-                id="familyName"
-                type="familyName"
-                {...register("familyName")}
-                placeholder="familyName  (例：山田)"
-                className="form-input"
-              />
+              <InputFormWithZod
+                register={register}
+                id={"familyName"}
+              ></InputFormWithZod>
               <p className="text-rose-600">
                 {errors.familyName?.message
                   ? (("※" + errors.familyName?.message) as React.ReactNode)
@@ -160,14 +128,10 @@ const SignUp: React.FC = () => {
             </div>
 
             <div className="mb-6">
-              名
-              <input
-                id="givenName"
-                type="givenName"
-                {...register("givenName")}
-                placeholder="givenName  (例：太郎)"
-                className="form-input"
-              />
+              <InputFormWithZod
+                register={register}
+                id={"givenName"}
+              ></InputFormWithZod>
               <p className="text-rose-600">
                 {errors.givenName?.message
                   ? (("※" + errors.givenName?.message) as React.ReactNode)
@@ -176,25 +140,18 @@ const SignUp: React.FC = () => {
             </div>
 
             <div className="mb-6">
-              表示名
-              <input
-                id="displayName"
-                type="displayName"
-                {...register("displayName")}
-                placeholder="displayName  (ニックネーム)"
-                className="form-input"
-              />
+              <InputFormWithZod
+                register={register}
+                id={"displayName"}
+              ></InputFormWithZod>
             </div>
 
             <div className="mb-6">
               メールアドレス
-              <input
-                id="email"
-                type="email"
-                {...register("email")}
-                placeholder="email"
-                className="form-input"
-              />
+              <InputFormWithZod
+                register={register}
+                id={"email"}
+              ></InputFormWithZod>
               <p className="text-rose-600">
                 {errors.email?.message
                   ? (("※" + errors.email?.message) as React.ReactNode)
@@ -204,13 +161,10 @@ const SignUp: React.FC = () => {
 
             <div className="mb-6">
               パスワード
-              <input
-                id="password"
-                type="password"
-                {...register("password")}
-                placeholder="password"
-                className="form-input"
-              />
+              <InputFormWithZod
+                register={register}
+                id={"password"}
+              ></InputFormWithZod>
               <p className="text-rose-600">
                 {errors.password?.message
                   ? (("※" + errors.password?.message) as React.ReactNode)
@@ -225,18 +179,7 @@ const SignUp: React.FC = () => {
                   id="place1"
                   type="number"
                   {...register("place1")}
-                  className="
-                        rounded-md
-                        border
-                        bordder-[#E9EDF4]
-                        py-3
-                        bg-[#FCFDFE]
-                        text-base text-body-color
-                        placeholder-[#ACB6BE]
-                        outline-none
-                        focus-visible:shadow-none
-                        focus:border-primary
-                        [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  className="address-form"
                   onChange={updateZipcodeMain}
                   value={zipcode.main}
                 />
@@ -245,18 +188,7 @@ const SignUp: React.FC = () => {
                   id="place2"
                   type="number"
                   {...register("place2")}
-                  className="
-                        rounded-md
-                        border
-                        bordder-[#E9EDF4]
-                        py-3
-                        bg-[#FCFDFE]
-                        text-base text-body-color
-                        placeholder-[#ACB6BE]
-                        outline-none
-                        focus-visible:shadow-none
-                        focus:border-primary
-                        [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  className="address-form"
                   onChange={updateZipcodeSub}
                   value={zipcode.sub}
                 />
