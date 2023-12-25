@@ -14,6 +14,7 @@ const Header: React.FC = () => {
       router.push("/");
     });
   };
+
   return (
     <header className="border-b max-h-30 border-gray-200 px-5 md:px-20">
       <div className="flex items-center justify-start">
@@ -25,36 +26,26 @@ const Header: React.FC = () => {
         <div className="grow"></div>
         <div className="mr-5">
           <nav className="md:mx-auto font-bold">
-            <ul className="flex">
+            <ul className="flex gap-12">
               {isLogin ? (
-                <li key="master" className="ml-5">
-                  <Link href={`/master`}>MyPage</Link>
-                </li>
+                <>
+                  <li key="setting">
+                    <Link href={`/setting`}>Setting</Link>
+                  </li>
+                  <li key="master">
+                    <Link href={`/master`}>MyPage</Link>
+                  </li>
+                  <button onClick={logoutFunction}>Logout</button>
+                </>
               ) : (
-                ""
-              )}
-              {isLogin ? (
-                <li key="setting" className="ml-5">
-                  <Link href={`/setting`}>Setting</Link>
-                </li>
-              ) : (
-                ""
-              )}
-              {isLogin ? (
-                <button className="ml-5" onClick={logoutFunction}>
-                  Logout
-                </button>
-              ) : (
-                <li key="login" className="ml-5">
-                  <Link href={`/login`}>Login</Link>
-                </li>
-              )}
-              {isLogin ? (
-                ""
-              ) : (
-                <li key="signup" className="ml-5">
-                  <Link href={`/signup`}>SignUp</Link>
-                </li>
+                <>
+                  <li key="login">
+                    <Link href={`/login`}>Login</Link>
+                  </li>
+                  <li key="signup">
+                    <Link href={`/signup`}>SignUp</Link>
+                  </li>
+                </>
               )}
             </ul>
           </nav>

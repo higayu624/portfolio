@@ -10,4 +10,5 @@ export const useQueryCoupon = () => {
     );
     return data;
   };
+  return { getCoupon };
 };

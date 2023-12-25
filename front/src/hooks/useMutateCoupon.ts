@@ -1,12 +1,9 @@
-import { useRouter } from "next/router";
-import { useLoginContext } from "../context/AppContext";
 import { useMutation } from "react-query";
 import { useError } from "./useError";
 import axios from "axios";
 import { NewPost } from "../types";
 
 export const useMutateCoupon = () => {
-  const router = useRouter();
   const { switchErrorHandling } = useError();
 
   const postMutation = useMutation(
