@@ -1,7 +1,9 @@
 name: portfolioGo
-host: portfolio-database.c0wy7zi5zmc7.ap-northeast-1.rds.amazonaws.com
+# host: portfolio-database.c0wy7zi5zmc7.ap-northeast-1.rds.amazonaws.com
+host: postgresql
 port: 5432
-password: Higashi624
+# password: Higashi624
+password: pass
 user: local_user
 schema: portfolioGo
 sslmode: disable

@@ -22,10 +22,7 @@ func NewUserRepository(dbHandler *gorm.DB) port.UserRepository {
 // InsertUserPostByRecent Insert User and Post Information from new Posts
 func (ur UserRepository) InsertUserPostByRecent() (users *entity.Users, err error) {
 	users = &entity.Users{}
-	// activate := true
-
 	err = ur.dbHandler.Preload("Post", "status = ?", true).Find(&users).Error
-
 	return
 }
 

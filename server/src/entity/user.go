@@ -12,7 +12,7 @@ type User struct {
 	UserRole    int    `json:"user_role"`
 	UserStatus  int    `json:"user_status"`
 	PlaceID     int    `json:"place_id"`
-	Post        Post   `gorm:"foreignKey:UserId"`
+	Post        Post   `gorm:"foreignKey:UserID"`
 }
 
 type Users []User
